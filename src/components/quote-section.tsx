@@ -4,13 +4,18 @@ import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import Reveal from "@/components/reveal";
 
+// Clé publique Web3Forms (contact@spvoyages.com) — https://web3forms.com
+const WEB3FORMS_ACCESS_KEY = "420e2b9b-0db3-49c9-a3ac-03bef16cbc24";
+
 export default function QuoteSection() {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const nom = (form.elements.namedItem("nom") as HTMLInputElement).value;
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
     const tel = (form.elements.namedItem("tel") as HTMLInputElement).value;
     const mode = (form.elements.namedItem("mode") as HTMLSelectElement).value;
     const pays = (form.elements.namedItem("pays") as HTMLSelectElement).value;
@@ -18,15 +23,44 @@ export default function QuoteSection() {
     const pax = (form.elements.namedItem("pax") as HTMLInputElement).value;
     const det = (form.elements.namedItem("det") as HTMLTextAreaElement).value;
 
-    const corps = `Nom : ${nom}\nTéléphone : ${tel}\nAvion ou bateau : ${mode}\nPays : ${pays}\nVille de départ : ${de}\nVoyageurs : ${pax}\nDates et précisions : ${det}`;
-    const mailto = `mailto:contact@spvoyages.com?subject=${encodeURIComponent(
-      "Demande de devis — " + pays,
-    )}&body=${encodeURIComponent(corps)}`;
-    window.location.href = mailto;
-    setSent(true);
-    toast.success("Demande reçue", {
-      description: "Un conseiller vous rappelle sous 24 h ouvrées.",
-    });
+    setSending(true);
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `Demande de devis — ${pays}`,
+          from_name: nom,
+          Nom: nom,
+          Email: email,
+          Téléphone: tel,
+          "Avion ou bateau": mode,
+          Pays: pays,
+          "Ville de départ": de,
+          Voyageurs: pax,
+          "Dates et précisions": det,
+          replyto: email,
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || "Échec de l'envoi");
+      setSent(true);
+      toast.success("Demande envoyée", {
+        description: "Un conseiller vous rappelle sous 24 h ouvrées.",
+      });
+    } catch {
+      const corps = `Nom : ${nom}\nEmail : ${email}\nTéléphone : ${tel}\nAvion ou bateau : ${mode}\nPays : ${pays}\nVille de départ : ${de}\nVoyageurs : ${pax}\nDates et précisions : ${det}`;
+      window.location.href = `mailto:contact@spvoyages.com?subject=${encodeURIComponent(
+        "Demande de devis — " + pays,
+      )}&body=${encodeURIComponent(corps)}`;
+      setSent(true);
+      toast.message("Votre logiciel mail va s'ouvrir", {
+        description: "L'envoi automatique a échoué, finalisez l'envoi depuis votre boîte mail.",
+      });
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -66,6 +100,10 @@ export default function QuoteSection() {
               <input id="tel" name="tel" type="tel" required />
             </div>
           </div>
+          <div>
+            <label htmlFor="email">E-mail</label>
+            <input id="email" name="email" type="email" required />
+          </div>
           <div className="f2">
             <div>
               <label htmlFor="mode">Avion ou bateau</label>
@@ -103,8 +141,8 @@ export default function QuoteSection() {
               placeholder="Autour du 15 juillet, retour fin août, 2 adultes 2 enfants, véhicule."
             />
           </div>
-          <button className="send" type="submit">
-            {sent ? "Demande envoyée" : "Envoyer la demande"}
+          <button className="send" type="submit" disabled={sending}>
+            {sent ? "Demande envoyée" : sending ? "Envoi en cours..." : "Envoyer la demande"}
           </button>
           <p className={`sent ${sent ? "on" : ""}`}>
             Demande reçue. Un conseiller vous rappelle sous 24 h ouvrées.

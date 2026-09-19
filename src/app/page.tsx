@@ -13,6 +13,7 @@ import Fleet from "@/components/fleet";
 import Testimonials from "@/components/testimonials";
 import Practical from "@/components/practical";
 import QuoteSection from "@/components/quote-section";
+import FindUs from "@/components/find-us";
 import SiteFooter from "@/components/site-footer";
 
 export default function Home() {
@@ -32,6 +33,7 @@ export default function Home() {
       <Testimonials />
       <Practical />
       <QuoteSection />
+      <FindUs />
       <SiteFooter />
       <BackToTop />
     </>

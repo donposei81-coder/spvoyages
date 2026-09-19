@@ -333,14 +333,26 @@ h3 {
   color: #fff;
   border-bottom-color: var(--foam);
 }
+.nav-contact {
+  display: none;
+}
 .call {
   font-variation-settings: "wdth" 110, "wght" 700;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: #fff;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   white-space: nowrap;
+}
+.call a {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.call svg {
+  color: var(--foam);
+  flex-shrink: 0;
 }
 .call b {
   color: var(--foam);
@@ -350,14 +362,24 @@ h3 {
   font-style: normal;
   color: var(--muted-dark);
 }
-@media (max-width: 760px) {
-  .call em,
-  .call a:last-of-type {
+.call-mail {
+  color: var(--muted-dark);
+}
+.call-mail b {
+  color: #fff;
+  font-variation-settings: "wght" 700;
+}
+.call-mail:hover b {
+  color: var(--foam);
+}
+@media (max-width: 1080px) {
+  .call-sep,
+  .call-mail {
     display: none;
   }
 }
-@media (max-width: 560px) {
-  .call span {
+@media (max-width: 920px) {
+  .call {
     display: none;
   }
 }
@@ -435,6 +457,24 @@ h3 {
     padding-block: 1rem;
     border-bottom: 1px solid var(--rule);
     font-size: 1.05rem;
+  }
+  .links.open .nav-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-top: 0.4rem;
+  }
+  .links.open .nav-contact a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--foam);
+    font-size: 0.98rem;
+  }
+  .links.open .nav-contact svg {
+    flex-shrink: 0;
   }
 }
 
@@ -1582,6 +1622,22 @@ button.logo-marquee-hit:hover {
   color: var(--foam-ink);
   flex-shrink: 0;
 }
+.payment-logos {
+  background: #fff;
+  border: 1px solid var(--rule-light);
+  padding: 0.5rem 0.9rem;
+  border-radius: 2px;
+}
+.payment-logos img {
+  height: 20px;
+  width: auto;
+  display: block;
+}
+.payment-logos span {
+  margin-left: 0.3rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--rule-light);
+}
 @media (max-width: 700px) {
   .payments {
     flex-direction: column;
@@ -1770,6 +1826,105 @@ button.send:hover {
     grid-template-columns: 1fr;
   }
   .f2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- find us ---- */
+.findus {
+  padding-block: clamp(4rem, 8vw, 6rem);
+  background: var(--paper);
+  border-block: 1px solid var(--rule-light);
+}
+.findus h2 {
+  font-size: clamp(1.8rem, 3.6vw, 2.4rem);
+  margin-bottom: 2.2rem;
+}
+.findus-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.6rem;
+}
+.findus-card {
+  background: #fff;
+  border: 1px solid var(--rule-light);
+  border-radius: 2px;
+  overflow: hidden;
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease;
+}
+.findus-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(22, 48, 31, 0.1);
+}
+.findus-map {
+  width: 100%;
+  height: 220px;
+  border: 0;
+  display: block;
+  filter: grayscale(0.15);
+}
+.findus-body {
+  padding: 1.5rem;
+}
+.findus-body h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.9rem;
+}
+.findus-body p {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.94rem;
+  color: var(--muted-c);
+  margin-bottom: 0.5rem;
+}
+.findus-body p svg {
+  color: var(--foam-ink);
+  flex-shrink: 0;
+}
+.findus-body p a {
+  color: var(--ink);
+  font-variation-settings: "wdth" 108, "wght" 700;
+}
+.findus-body p a:hover {
+  color: var(--foam-ink);
+}
+.findus-hours {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule-light);
+}
+.findus-hours-label {
+  font-variation-settings: "wdth" 106, "wght" 700;
+  color: var(--ink);
+}
+.findus-hours ul {
+  list-style: none;
+  margin-top: 0.5rem;
+}
+.findus-hours li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.86rem;
+  color: var(--muted-c);
+  padding-block: 0.2rem;
+}
+.findus-dir {
+  display: inline-flex;
+  margin-top: 1.2rem;
+  font-size: 0.92rem;
+  color: var(--signal-ink);
+  font-variation-settings: "wdth" 108, "wght" 700;
+  border-bottom: 1px solid rgba(193, 72, 30, 0.45);
+}
+.findus-dir:hover {
+  color: var(--deep);
+  border-bottom-color: var(--deep);
+}
+@media (max-width: 760px) {
+  .findus-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { Phone, Mail } from "lucide-react";
 
 const LINKS = [
   { href: "#recherche", label: "Rechercher" },
@@ -68,15 +69,34 @@ export default function SiteHeader() {
                 {l.label}
               </a>
             ))}
+            <div className="nav-contact">
+              <a href="tel:+33478626508">
+                <Phone size={16} aria-hidden />
+                04 78 62 65 08
+              </a>
+              <a href="tel:+33973880987">
+                <Phone size={16} aria-hidden />
+                09 73 88 09 87
+              </a>
+              <a href="mailto:contact@spvoyages.com">
+                <Mail size={16} aria-hidden />
+                contact@spvoyages.com
+              </a>
+            </div>
           </nav>
           <div className="call">
-            <span>Conseiller</span>
             <a href="tel:+33478626508">
+              <Phone size={15} aria-hidden />
               <b>04 78 62 65 08</b>
             </a>
-            <em>/</em>
-            <a href="tel:+33973880987">
+            <em className="call-slash">/</em>
+            <a href="tel:+33973880987" className="call-second">
               <b>09 73 88 09 87</b>
+            </a>
+            <em className="call-sep">·</em>
+            <a href="mailto:contact@spvoyages.com" className="call-mail">
+              <Mail size={15} aria-hidden />
+              <b>contact@spvoyages.com</b>
             </a>
           </div>
           <button

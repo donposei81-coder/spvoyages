@@ -1,14 +1,7 @@
-import { ShieldCheck, Banknote, Ticket, Repeat, BadgeCheck } from "lucide-react";
+import { Banknote, Ticket, BadgeCheck } from "lucide-react";
 import Reveal from "@/components/reveal";
 
 const STARS = "★★★★★";
-
-const PAYMENTS = [
-  { icon: ShieldCheck, label: "Paiement en ligne sécurisé" },
-  { icon: Banknote, label: "Espèces" },
-  { icon: Ticket, label: "Chèques Vacances" },
-  { icon: Repeat, label: "Oney 3x ou 4x" },
-];
 
 const LYON_URL =
   "https://www.google.com/maps/place/SP+VOYAGES/@45.755833,4.842488,17z/data=!4m8!3m7!1s0x47f4c38f96613877:0xbde0246bbd691b89!8m2!3d45.755833!4d4.842488!16s%2Fg%2F11b6bd2nr6";
@@ -78,12 +71,26 @@ export default function Testimonials() {
         <div className="payments">
           <span className="payments-label">Moyens de paiement acceptés</span>
           <ul>
-            {PAYMENTS.map((p) => (
-              <li key={p.label}>
-                <p.icon size={18} aria-hidden />
-                {p.label}
-              </li>
-            ))}
+            {/* eslint-disable @next/next/no-img-element */}
+            <li className="payment-logos">
+              <img src="/img/payments/visa.svg" alt="Visa" />
+              <img src="/img/payments/mastercard.svg" alt="Mastercard" />
+              <img src="/img/payments/cb.svg" alt="Carte Bancaire" />
+              <span>Paiement en ligne sécurisé</span>
+            </li>
+            <li>
+              <Banknote size={18} aria-hidden />
+              Espèces
+            </li>
+            <li>
+              <Ticket size={18} aria-hidden />
+              Chèques Vacances
+            </li>
+            <li className="payment-logos">
+              <img src="/img/payments/oney.svg" alt="Oney" />
+              <span>3x ou 4x</span>
+            </li>
+            {/* eslint-enable @next/next/no-img-element */}
           </ul>
         </div>
       </div>
