@@ -1,4 +1,4 @@
-import { Banknote, Ticket, BadgeCheck } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import Reveal from "@/components/reveal";
 
 const STARS = "★★★★★";
@@ -78,13 +78,13 @@ export default function Testimonials() {
               <img src="/img/payments/cb.svg" alt="Carte Bancaire" />
               <span>Paiement en ligne sécurisé</span>
             </li>
-            <li>
-              <Banknote size={18} aria-hidden />
-              Espèces
+            <li className="payment-logos">
+              <img src="/img/payments/especes.svg" alt="" />
+              <span>Espèces</span>
             </li>
-            <li>
-              <Ticket size={18} aria-hidden />
-              Chèques Vacances
+            <li className="payment-logos">
+              <img src="/img/payments/ancv.png" alt="Chèques-Vacances ANCV" />
+              <span>Chèques Vacances</span>
             </li>
             <li className="payment-logos">
               <img src="/img/payments/oney.svg" alt="Oney" />
