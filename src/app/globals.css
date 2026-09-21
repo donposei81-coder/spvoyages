@@ -1093,6 +1093,9 @@ td.act a:hover {
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
+.panel-card {
+  height: 440px;
+}
 .panel {
   background: var(--deep);
   border: 1px solid var(--rule);
