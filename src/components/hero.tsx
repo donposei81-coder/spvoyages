@@ -37,7 +37,7 @@ export default function Hero({
         <div className="hero-copy">
           <p className="kicker">Vols secs et traversées en ferry</p>
           <h1>
-            Une mer à traverser, <em>trois pays</em> à retrouver.
+            Votre agence spécialiste <em>du Maghreb</em>.
           </h1>
           <p>
             Nous réservons vos billets d&apos;avion et de bateau vers l&apos;Algérie, le Maroc et

@@ -311,8 +311,13 @@ h3 {
   border-radius: 50%;
 }
 @media (max-width: 480px) {
-  .mark span {
-    display: none;
+  .mark {
+    font-size: 1.55rem;
+    gap: 0.6rem;
+  }
+  .mark img {
+    width: 46px;
+    height: 46px;
   }
 }
 .mark i {
