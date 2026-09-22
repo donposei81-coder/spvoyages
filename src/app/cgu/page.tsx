@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import SiteHeader from "@/components/site-header";
-import SiteFooter from "@/components/site-footer";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Conditions générales d'utilisation — SP Voyages",
@@ -9,10 +8,15 @@ export const metadata: Metadata = {
 
 export default function TermsOfUsePage() {
   return (
-    <>
-      <SiteHeader />
+    <div className="min-h-screen bg-[#FBF6EF]">
+      <header className="border-b border-[#E8DDCE] bg-white px-6 py-4">
+        <a href="/" className="inline-flex items-center gap-2 font-bold text-[#2B211C]">
+          <Image src="/img/logo.png" alt="SPVoyages" width={34} height={34} className="rounded" />
+          SPVoyages
+        </a>
+      </header>
       <main className="mx-auto max-w-3xl px-6 py-16 leading-relaxed text-neutral-800">
-        <a href="/" className="mb-8 inline-block text-sm font-semibold text-emerald-700">
+        <a href="/" className="mb-8 inline-block text-sm font-semibold text-[#B91C34]">
           ← Retour au site
         </a>
         <h1 className="mb-2 text-3xl font-bold">Conditions générales d&apos;utilisation</h1>
@@ -33,7 +37,7 @@ export default function TermsOfUsePage() {
           <br />
           Téléphone : 04 78 62 65 08 / 09 73 88 09 87
           <br />
-          E-mail : <a href="mailto:contact@spvoyages.com" className="text-emerald-700">contact@spvoyages.com</a>
+          E-mail : <a href="mailto:contact@spvoyages.com" className="text-[#B91C34]">contact@spvoyages.com</a>
         </p>
 
         <h2 className="mb-2 mt-8 text-xl font-bold">3. Description du service</h2>
@@ -77,7 +81,10 @@ export default function TermsOfUsePage() {
           des tribunaux français.
         </p>
       </main>
-      <SiteFooter />
-    </>
+      <footer className="border-t border-[#E8DDCE] px-6 py-8 text-center text-sm text-neutral-500">
+        spvoyages.com · © 2026 SP Voyages ·{" "}
+        <a href="/politique-de-confidentialite" className="font-semibold text-[#B91C34]">Confidentialité</a>
+      </footer>
+    </div>
   );
 }

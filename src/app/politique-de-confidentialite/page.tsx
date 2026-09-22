@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import SiteHeader from "@/components/site-header";
-import SiteFooter from "@/components/site-footer";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité — SP Voyages",
@@ -9,10 +8,15 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <>
-      <SiteHeader />
+    <div className="min-h-screen bg-[#FBF6EF]">
+      <header className="border-b border-[#E8DDCE] bg-white px-6 py-4">
+        <a href="/" className="inline-flex items-center gap-2 font-bold text-[#2B211C]">
+          <Image src="/img/logo.png" alt="SPVoyages" width={34} height={34} className="rounded" />
+          SPVoyages
+        </a>
+      </header>
       <main className="mx-auto max-w-3xl px-6 py-16 leading-relaxed text-neutral-800">
-        <a href="/" className="mb-8 inline-block text-sm font-semibold text-emerald-700">
+        <a href="/" className="mb-8 inline-block text-sm font-semibold text-[#B91C34]">
           ← Retour au site
         </a>
         <h1 className="mb-2 text-3xl font-bold">Politique de confidentialité</h1>
@@ -30,7 +34,7 @@ export default function PrivacyPolicyPage() {
           <br />
           12 Rue Montebello, 69003 Lyon / 17 Avenue Jean Cagne, 69200 Vénissieux
           <br />
-          Contact : <a href="mailto:contact@spvoyages.com" className="text-emerald-700">contact@spvoyages.com</a> · 04 78 62 65 08
+          Contact : <a href="mailto:contact@spvoyages.com" className="text-[#B91C34]">contact@spvoyages.com</a> · 04 78 62 65 08
         </p>
 
         <h2 className="mb-2 mt-8 text-xl font-bold">2. Données que nous collectons</h2>
@@ -69,7 +73,7 @@ export default function PrivacyPolicyPage() {
           Conformément au RGPD, vous disposez d&apos;un droit d&apos;accès, de rectification,
           d&apos;effacement et d&apos;opposition sur vos données personnelles. Pour exercer ces
           droits, contactez-nous à{" "}
-          <a href="mailto:contact@spvoyages.com" className="text-emerald-700">contact@spvoyages.com</a>. Vous
+          <a href="mailto:contact@spvoyages.com" className="text-[#B91C34]">contact@spvoyages.com</a>. Vous
           pouvez également introduire une réclamation auprès de la CNIL (cnil.fr).
         </p>
 
@@ -80,7 +84,10 @@ export default function PrivacyPolicyPage() {
           réservation que vous nous confiez.
         </p>
       </main>
-      <SiteFooter />
-    </>
+      <footer className="border-t border-[#E8DDCE] px-6 py-8 text-center text-sm text-neutral-500">
+        spvoyages.com · © 2026 SP Voyages ·{" "}
+        <a href="/cgu" className="font-semibold text-[#B91C34]">CGU</a>
+      </footer>
+    </div>
   );
 }
