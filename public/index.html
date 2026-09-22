@@ -151,8 +151,11 @@
   .finder-fields label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--color-muted);}
   .finder-fields input{font-family:inherit;font-size:14px;padding:11px 12px;border-radius:9px;border:1px solid var(--color-border);background:var(--color-bg);color:var(--color-fg);}
   .finder-fields button{white-space:nowrap;padding:12px 22px;}
+  .finder-options{grid-column:1 / -1;display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:2px;}
+  .finder-options .seg[hidden]{display:none;}
+  #fBackLabel.hidden{visibility:hidden;}
   @media (max-width:1000px){.finder-fields{grid-template-columns:1fr 1fr 1fr;}}
-  @media (max-width:640px){.finder-fields{grid-template-columns:1fr;} .finder-fields button{width:100%;}}
+  @media (max-width:640px){.finder-fields{grid-template-columns:1fr;} .finder-fields button{width:100%;} #fBackLabel.hidden{display:none;}}
   .finder-results{margin-top:20px;display:flex;flex-direction:column;gap:10px;border-radius:16px;}
   .finder-results.flash{animation:finder-flash .9s ease;}
   @keyframes finder-flash{0%{box-shadow:0 0 0 3px var(--color-accent);}100%{box-shadow:0 0 0 0 rgba(162,98,11,0);}}
@@ -448,9 +451,19 @@
         <label>Départ<input id="fFrom" list="villesFr" placeholder="Marseille" autocomplete="off"></label>
         <label>Arrivée<input id="fTo" list="villesMg" placeholder="Alger" autocomplete="off"></label>
         <label>Aller<input id="fOut" type="date"></label>
-        <label>Retour<input id="fBack" type="date"></label>
+        <label id="fBackLabel">Retour<input id="fBack" type="date"></label>
         <label>Voyageurs<input id="fPax" type="number" min="1" max="9" value="1"></label>
         <button type="submit" class="btn btn-primary">Rechercher</button>
+        <div class="finder-options">
+          <div class="seg" role="group" aria-label="Type de trajet">
+            <button type="button" class="mode-btn" data-trip="RT" aria-pressed="true">Aller-retour</button>
+            <button type="button" class="mode-btn" data-trip="OW" aria-pressed="false">Aller simple</button>
+          </div>
+          <div class="seg" role="group" aria-label="Véhicule" id="vehicleToggle" hidden>
+            <button type="button" class="mode-btn" data-vehicle="Sans véhicule" aria-pressed="true">Sans véhicule</button>
+            <button type="button" class="mode-btn" data-vehicle="Avec véhicule" aria-pressed="false">Avec véhicule</button>
+          </div>
+        </div>
       </form>
       <div class="finder-results" id="finderResults" aria-live="polite"></div>
     </div>
@@ -1055,12 +1068,52 @@
     updateFinderDatalists();
     fFromEl.addEventListener('input', updateFinderDatalists);
     fToEl.addEventListener('input', updateFinderDatalists);
+
+    /* Dates: never today or in the past — earliest selectable day is tomorrow.
+       Retour can't be before Aller. */
+    var fOutEl = document.getElementById('fOut'), fBackEl = document.getElementById('fBack');
+    function toISODate(d){ return d.toISOString().slice(0,10); }
+    var tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    fOutEl.min = toISODate(tomorrow);
+    fBackEl.min = toISODate(tomorrow);
+    fOutEl.addEventListener('change', function(){
+      if(fOutEl.value){
+        fBackEl.min = fOutEl.value;
+        if(fBackEl.value && fBackEl.value < fOutEl.value) fBackEl.value = fOutEl.value;
+      }
+    });
+
+    /* Aller simple / Aller-retour */
+    var tripValue = 'RT';
+    var fBackLabel = document.getElementById('fBackLabel');
+    document.querySelectorAll('.finder-options [data-trip]').forEach(function(b){
+      b.addEventListener('click', function(){
+        document.querySelectorAll('.finder-options [data-trip]').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+        b.setAttribute('aria-pressed','true');
+        tripValue = b.dataset.trip;
+        fBackLabel.classList.toggle('hidden', tripValue === 'OW');
+        if(tripValue === 'OW') fBackEl.value = '';
+      });
+    });
+
+    /* Avec / sans véhicule — ferry only */
+    var vehicleValue = 'Sans véhicule';
+    var vehicleToggle = document.getElementById('vehicleToggle');
+    document.querySelectorAll('.finder-options [data-vehicle]').forEach(function(b){
+      b.addEventListener('click', function(){
+        document.querySelectorAll('.finder-options [data-vehicle]').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+        b.setAttribute('aria-pressed','true');
+        vehicleValue = b.dataset.vehicle;
+      });
+    });
+
     document.querySelectorAll('.seg-btn').forEach(function(b){
       b.addEventListener('click', function(){
         document.querySelectorAll('.seg-btn').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
         b.setAttribute('aria-pressed','true');
         segMode = b.dataset.seg;
         fFromEl.value = ''; fToEl.value = '';
+        vehicleToggle.hidden = segMode !== 'ferry';
         updateFinderDatalists();
         if(finderResults.innerHTML) runFinderSearch();
       });
@@ -1074,8 +1127,10 @@
       var out = document.getElementById('fOut').value, back = document.getElementById('fBack').value;
       var txt = 'Trajet : ' + a + ' → ' + b + '.';
       if(carriers) txt += ' Compagnies : ' + carriers + '.';
+      txt += ' ' + (tripValue === 'OW' ? 'Aller simple' : 'Aller-retour') + '.';
       if(out) txt += ' Aller le ' + out + '.';
-      if(back) txt += ' Retour le ' + back + '.';
+      if(tripValue === 'RT' && back) txt += ' Retour le ' + back + '.';
+      if(segMode === 'ferry') txt += ' ' + vehicleValue + '.';
       form.elements['message'].value = txt;
       var target = document.getElementById('contact');
       if(lenis){ lenis.scrollTo(target, {offset:-70}); } else { target.scrollIntoView({block:'start'}); }
