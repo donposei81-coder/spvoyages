@@ -300,6 +300,9 @@
   .contact-form textarea{resize:vertical;}
   .form-note{font-size:13px;color:var(--color-primary-dark);min-height:1em;}
   .field-error{display:block;font-size:12px;color:var(--color-primary-dark);font-weight:600;min-height:1.2em;margin-top:2px;}
+  .mode-toggle{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .mode-label{font-size:12px;font-weight:600;color:var(--color-muted);}
+  .mode-toggle .seg-btn:disabled{opacity:.4;cursor:not-allowed;}
   .contact-form input:invalid,.contact-form textarea:invalid{box-shadow:none;}
   .contact-form input.error,.contact-form textarea.error{border-color:var(--color-primary);}
   .hp-field{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
@@ -644,13 +647,41 @@
     <div class="contact-grid">
       <form class="contact-form reveal" id="quoteForm" novalidate>
         <div class="form-row">
-          <label>Nom complet<input type="text" name="nom" required minlength="2" autocomplete="name"><span class="field-error" data-for="nom"></span></label>
+          <label>Nom<input type="text" name="nom" required minlength="2" autocomplete="name"><span class="field-error" data-for="nom"></span></label>
           <label>Téléphone<input type="tel" name="tel" autocomplete="tel" pattern="^[0-9 +().-]{6,}$"><span class="field-error" data-for="tel"></span></label>
         </div>
         <label>E-mail<input type="email" name="email" required autocomplete="email"><span class="field-error" data-for="email"></span></label>
         <div class="form-row">
-          <label>Destination<select name="destination"><option>Algérie</option><option>Maroc</option><option>Tunisie</option><option>Séjour (vol + hôtel)</option><option>Ferry</option><option>Autre</option></select></label>
+          <label>Destination
+            <select name="destination" id="destSelect">
+              <option>Algérie</option>
+              <option>Maroc</option>
+              <option>Tunisie</option>
+              <optgroup label="Europe">
+                <option>Espagne</option>
+                <option>Italie</option>
+                <option>Portugal</option>
+                <option>Grèce</option>
+                <option>Turquie</option>
+              </optgroup>
+              <optgroup label="Afrique">
+                <option>Sénégal</option>
+                <option>Côte d'Ivoire</option>
+                <option>Cameroun</option>
+                <option>Mali</option>
+              </optgroup>
+              <option>Autre</option>
+            </select>
+          </label>
           <label>Nombre de voyageurs<input type="number" name="pax" min="1" max="20" value="1"></label>
+        </div>
+        <div class="mode-toggle" id="modeToggle">
+          <span class="mode-label">Mode de transport souhaité</span>
+          <div class="seg">
+            <button type="button" class="seg-btn" data-mode="Vol" aria-pressed="true">Vol</button>
+            <button type="button" class="seg-btn" data-mode="Ferry" aria-pressed="false" id="modeFerryBtn">Ferry</button>
+          </div>
+          <input type="hidden" name="mode" id="modeInput" value="Vol">
         </div>
         <label>Votre demande<textarea name="message" rows="4" placeholder="Dates envisagées, ville de départ, budget..." required minlength="10"></textarea><span class="field-error" data-for="message"></span></label>
         <div class="hp-field" aria-hidden="true"><label>Laissez ce champ vide<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
@@ -1018,10 +1049,13 @@
     });
 
     function fillQuoteForm(a, b, carriers){
-      var destSelect = form.elements['destination'];
+      var destSelectEl = form.elements['destination'];
       var country = PAYS[normCity(b)];
-      if(country){ Array.from(destSelect.options).forEach(function(o){ if(o.text === country) destSelect.value = country; }); }
-      else{ destSelect.value = segMode === 'air' ? 'Autre' : 'Ferry'; }
+      destSelectEl.value = country || 'Autre';
+      if(typeof updateModeAvailability === 'function'){
+        updateModeAvailability();
+        if(typeof setMode === 'function') setMode(segMode === 'ferry' ? 'Ferry' : 'Vol');
+      }
       form.elements['pax'].value = document.getElementById('fPax').value || 1;
       var out = document.getElementById('fOut').value, back = document.getElementById('fBack').value;
       var txt = 'Trajet : ' + a + ' → ' + b + '.';
@@ -1092,6 +1126,29 @@
 
   /* ---------- Quote form (mailto, no backend) — validation + honeypot anti-spam ---------- */
   var form = document.getElementById('quoteForm'), note = document.getElementById('formNote');
+
+  /* Ferry only exists for Algérie/Maroc/Tunisie — every other destination is Vol only */
+  var FERRY_COUNTRIES = ['Algérie', 'Maroc', 'Tunisie'];
+  var destSelect = document.getElementById('destSelect');
+  var modeInput = document.getElementById('modeInput');
+  var modeFerryBtn = document.getElementById('modeFerryBtn');
+  function setMode(mode){
+    modeInput.value = mode;
+    form.querySelectorAll('.mode-toggle .seg-btn').forEach(function(b){
+      b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false');
+    });
+  }
+  function updateModeAvailability(){
+    var ferryAvailable = FERRY_COUNTRIES.indexOf(destSelect.value) !== -1;
+    modeFerryBtn.disabled = !ferryAvailable;
+    modeFerryBtn.title = ferryAvailable ? '' : 'Le ferry n’existe que vers l’Algérie, le Maroc et la Tunisie';
+    if(!ferryAvailable && modeInput.value === 'Ferry') setMode('Vol');
+  }
+  destSelect.addEventListener('change', updateModeAvailability);
+  form.querySelectorAll('.mode-toggle .seg-btn').forEach(function(b){
+    b.addEventListener('click', function(){ if(!b.disabled) setMode(b.dataset.mode); });
+  });
+  updateModeAvailability();
   var errorMsgs = {
     nom: 'Merci d’indiquer votre nom (2 caractères minimum).',
     email: 'Merci d’indiquer une adresse e-mail valide.',
@@ -1138,7 +1195,7 @@
     }
 
     var d = new FormData(form);
-    var body = 'Nom : '+d.get('nom')+'\nTéléphone : '+d.get('tel')+'\nDestination : '+d.get('destination')+'\nVoyageurs : '+d.get('pax')+'\n\n'+d.get('message');
+    var body = 'Nom : '+d.get('nom')+'\nTéléphone : '+d.get('tel')+'\nDestination : '+d.get('destination')+'\nMode de transport : '+d.get('mode')+'\nVoyageurs : '+d.get('pax')+'\n\n'+d.get('message');
     var mailto = 'mailto:contact@spvoyages.com?subject='+encodeURIComponent('Demande de devis — '+d.get('destination'))+'&body='+encodeURIComponent(body)+'&cc='+encodeURIComponent(d.get('email'));
     window.location.href = mailto;
     note.textContent = 'Votre messagerie va s’ouvrir avec la demande pré-remplie — il ne reste qu’à l’envoyer.';
