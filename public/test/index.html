@@ -141,6 +141,42 @@
   .swatch{width:22px;height:2px;background:var(--color-accent);display:block;flex-shrink:0;}
   .swatch.s2{background:none;border-top:2px dashed #F0B93A;height:0;}
 
+  /* ---------- FINDER (chercher une liaison) ---------- */
+  .finder-box{background:var(--color-card);border:1px solid var(--color-border);border-radius:24px;padding:32px;box-shadow:var(--shadow-md);}
+  .finder-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;}
+  .finder-top h2{font-size:1.4rem;}
+  .seg{display:flex;gap:4px;background:var(--color-bg);padding:4px;border-radius:10px;border:1px solid var(--color-border);width:fit-content;}
+  .seg-btn,.tab-btn{border:0;background:transparent;color:var(--color-muted);font-family:inherit;font-weight:600;font-size:13px;padding:8px 18px;border-radius:7px;cursor:pointer;transition:background .16s,color .16s;}
+  .seg-btn[aria-pressed="true"],.tab-btn[aria-pressed="true"]{background:var(--color-accent);color:#fff;}
+  .finder-fields{display:grid;grid-template-columns:1.2fr 1.2fr .9fr .9fr .7fr auto;gap:14px;align-items:end;}
+  .finder-fields label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--color-muted);}
+  .finder-fields input{font-family:inherit;font-size:14px;padding:11px 12px;border-radius:9px;border:1px solid var(--color-border);background:var(--color-bg);color:var(--color-fg);}
+  .finder-fields button{white-space:nowrap;padding:12px 22px;}
+  @media (max-width:1000px){.finder-fields{grid-template-columns:1fr 1fr 1fr;}}
+  @media (max-width:640px){.finder-fields{grid-template-columns:1fr;} .finder-fields button{width:100%;}}
+  .finder-results{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+  .res-count{font-size:13px;color:var(--color-muted);font-weight:600;}
+  .res{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:12px;padding:14px 18px;flex-wrap:wrap;}
+  .res .leg{font-family:'Fraunces',serif;font-weight:700;font-size:1.05rem;}
+  .res .leg s{margin:0 8px;color:var(--color-accent-dark);text-decoration:none;}
+  .res .sub{font-size:12.5px;color:var(--color-muted);margin-top:2px;}
+  .res button{background:var(--color-accent);color:#fff;border:0;padding:9px 18px;border-radius:999px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;}
+  .res-empty{font-size:14px;color:var(--color-muted);}
+
+  /* ---------- BOARD (toutes les liaisons) ---------- */
+  .board-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:28px;}
+  .board-head h2{font-size:1.5rem;margin:6px 0;}
+  .board-head p{color:var(--color-muted);font-size:14px;}
+  .board-table{background:var(--color-card);border:1px solid var(--color-border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-md);}
+  .board-table table{width:100%;border-collapse:collapse;}
+  .board-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--color-muted);padding:14px 20px;border-bottom:1px solid var(--color-border);}
+  .board-table td{padding:14px 20px;border-bottom:1px solid var(--color-border);font-size:14px;}
+  .board-table tr:last-child td{border-bottom:0;}
+  .board-table .leg s{margin:0 8px;color:var(--color-accent-dark);text-decoration:none;}
+  .board-table .carrier{color:var(--color-muted);}
+  .board-table a{color:var(--color-primary-dark);font-weight:600;font-size:13px;white-space:nowrap;}
+  @media (max-width:700px){.board-table th:nth-child(2),.board-table td:nth-child(2){display:none;} .board-table{overflow-x:auto;}}
+
   /* ---------- SECTION HEAD ---------- */
   .section{padding:110px 0;}
   .section-head{text-align:center;max-width:640px;margin:0 auto 56px;}
@@ -348,6 +384,52 @@
   </div>
 </section>
 
+<section class="section" id="recherche" style="padding-top:0;">
+  <div class="container">
+    <div class="finder-box reveal">
+      <div class="finder-top">
+        <h2>Chercher une liaison</h2>
+        <div class="seg" role="group" aria-label="Type de liaison">
+          <button type="button" class="seg-btn" data-seg="air" aria-pressed="true">Avion</button>
+          <button type="button" class="seg-btn" data-seg="ferry" aria-pressed="false">Ferry</button>
+        </div>
+      </div>
+      <form class="finder-fields" id="finderForm">
+        <label>Départ<input id="fFrom" list="villesFr" placeholder="Marseille" autocomplete="off"></label>
+        <label>Arrivée<input id="fTo" list="villesMg" placeholder="Alger" autocomplete="off"></label>
+        <label>Aller<input id="fOut" type="date"></label>
+        <label>Retour<input id="fBack" type="date"></label>
+        <label>Voyageurs<input id="fPax" type="number" min="1" max="9" value="2"></label>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+      </form>
+      <div class="finder-results" id="finderResults" aria-live="polite"></div>
+    </div>
+  </div>
+  <datalist id="villesFr"><option>Lyon</option><option>Marseille</option><option>Sète</option><option>Barcelone</option><option>Valence</option><option>Almería</option><option>Algésiras</option><option>Gênes</option></datalist>
+  <datalist id="villesMg"><option>Alger</option><option>Oran</option><option>Constantine</option><option>Annaba</option><option>Sétif</option><option>Béjaïa</option><option>Batna</option><option>Biskra</option><option>Tlemcen</option><option>Skikda</option><option>Ghazaouet</option><option>Mostaganem</option><option>Casablanca</option><option>Marrakech</option><option>Tanger</option><option>Agadir</option><option>Fès</option><option>Oujda</option><option>Nador</option><option>Melilla</option><option>Tunis</option><option>Monastir</option><option>Djerba</option></datalist>
+</section>
+
+<section class="section" id="departs" style="padding-top:0;">
+  <div class="container">
+    <div class="board-head reveal">
+      <div>
+        <span class="kicker">Toutes nos liaisons</span>
+        <h2>38 liaisons aériennes et maritimes</h2>
+        <p>Du Maroc à la Tunisie, en passant par l'Algérie.</p>
+      </div>
+      <div class="seg" role="group" aria-label="Filtrer par type">
+        <button type="button" class="tab-btn" data-mode="air" aria-pressed="true">Avion</button>
+        <button type="button" class="tab-btn" data-mode="ferry" aria-pressed="false">Ferry</button>
+      </div>
+    </div>
+    <div class="board-table reveal">
+      <table>
+        <thead><tr><th>Liaison</th><th>Compagnies</th><th></th></tr></thead>
+        <tbody id="boardBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
 <section class="section" style="padding-top:20px;">
   <div class="container">
@@ -740,6 +822,133 @@
     else{
       ScrollTrigger.create({ trigger: mapCard, start:'top 80%', once:true, onEnter: function(){ replayRoutes('air'); } });
     }
+  }
+
+  /* ---------- Chercher une liaison + Toutes nos liaisons (real routes) ---------- */
+  var ROUTES = {
+    air:[
+      ["Lyon","Marrakech","Royal Air Maroc · Transavia · Air Arabia"],
+      ["Lyon","Casablanca","Royal Air Maroc · Transavia"],
+      ["Lyon","Fès","Royal Air Maroc · Air Arabia"],
+      ["Lyon","Agadir","Royal Air Maroc · Transavia"],
+      ["Lyon","Tanger","Royal Air Maroc · Air Arabia"],
+      ["Lyon","Oujda","Royal Air Maroc · Air Arabia"],
+      ["Lyon","Oran","Air Algérie · Transavia"],
+      ["Lyon","Tlemcen","Air Algérie"],
+      ["Lyon","Alger","Air Algérie · Transavia"],
+      ["Lyon","Béjaïa","Air Algérie"],
+      ["Lyon","Biskra","Air Algérie"],
+      ["Lyon","Batna","Air Algérie"],
+      ["Lyon","Annaba","Air Algérie"],
+      ["Lyon","Constantine","Air Algérie · Transavia"],
+      ["Lyon","Sétif","Air Algérie · Transavia"],
+      ["Lyon","Tunis","Tunisair · Nouvelair"],
+      ["Lyon","Monastir","Nouvelair · Tunisair"],
+      ["Lyon","Djerba","Nouvelair · Tunisair"]
+    ],
+    ferry:[
+      ["Sète","Tanger","GNV"],
+      ["Sète","Nador","GNV"],
+      ["Barcelone","Tanger","GNV · Balearia"],
+      ["Barcelone","Nador","GNV"],
+      ["Almería","Melilla","Balearia"],
+      ["Algésiras","Tanger","Balearia"],
+      ["Algésiras","Nador","Balearia"],
+      ["Marseille","Alger","Corsica Linea"],
+      ["Marseille","Béjaïa","Corsica Linea"],
+      ["Sète","Alger","Nous consulter"],
+      ["Sète","Béjaïa","Nous consulter"],
+      ["Sète","Skikda","Nous consulter"],
+      ["Barcelone","Alger","Nous consulter"],
+      ["Barcelone","Oran","Nous consulter"],
+      ["Valence","Oran","Nous consulter"],
+      ["Valence","Mostaganem","Nous consulter"],
+      ["Almería","Oran","Nous consulter"],
+      ["Almería","Ghazaouet","Nous consulter"],
+      ["Gênes","Tunis","GNV"],
+      ["Marseille","Tunis","CTN · Corsica Linea"]
+    ]
+  };
+  var PAYS = {
+    alger:"Algérie", oran:"Algérie", constantine:"Algérie", annaba:"Algérie", setif:"Algérie",
+    bejaia:"Algérie", batna:"Algérie", biskra:"Algérie", tlemcen:"Algérie", skikda:"Algérie",
+    ghazaouet:"Algérie", mostaganem:"Algérie",
+    casablanca:"Maroc", marrakech:"Maroc", tanger:"Maroc", agadir:"Maroc", nador:"Maroc",
+    fes:"Maroc", oujda:"Maroc", melilla:"Maroc",
+    tunis:"Tunisie", monastir:"Tunisie", djerba:"Tunisie"
+  };
+  function normCity(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim(); }
+
+  var finderForm = document.getElementById('finderForm');
+  if(finderForm){
+    var finderResults = document.getElementById('finderResults');
+    var segMode = 'air';
+    document.querySelectorAll('.seg-btn').forEach(function(b){
+      b.addEventListener('click', function(){
+        document.querySelectorAll('.seg-btn').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+        b.setAttribute('aria-pressed','true');
+        segMode = b.dataset.seg;
+        if(finderResults.innerHTML) runFinderSearch();
+      });
+    });
+
+    function fillQuoteForm(a, b, carriers){
+      var destSelect = form.elements['destination'];
+      var country = PAYS[normCity(b)];
+      if(country){ Array.from(destSelect.options).forEach(function(o){ if(o.text === country) destSelect.value = country; }); }
+      else{ destSelect.value = segMode === 'air' ? 'Autre' : 'Ferry'; }
+      form.elements['pax'].value = document.getElementById('fPax').value || 2;
+      var out = document.getElementById('fOut').value, back = document.getElementById('fBack').value;
+      var txt = 'Trajet : ' + a + ' → ' + b + '.';
+      if(carriers) txt += ' Compagnies : ' + carriers + '.';
+      if(out) txt += ' Aller le ' + out + '.';
+      if(back) txt += ' Retour le ' + back + '.';
+      form.elements['message'].value = txt;
+      var target = document.getElementById('contact');
+      if(lenis){ lenis.scrollTo(target, {offset:-70}); } else { target.scrollIntoView({block:'start'}); }
+      setTimeout(function(){ form.elements['nom'].focus({preventScroll:true}); }, 500);
+    }
+
+    function runFinderSearch(){
+      var from = normCity(document.getElementById('fFrom').value);
+      var to = normCity(document.getElementById('fTo').value);
+      var rows = ROUTES[segMode].filter(function(r){
+        return (!from || normCity(r[0]).indexOf(from) > -1) && (!to || normCity(r[1]).indexOf(to) > -1);
+      });
+      var label = segMode === 'air' ? 'liaison aérienne' : 'traversée en ferry';
+      var html = '';
+      if(rows.length){
+        html += '<p class="res-count">' + rows.length + ' ' + label + (rows.length > 1 ? 's' : '') + ' correspondent à votre recherche.</p>';
+        rows.forEach(function(r){
+          html += '<div class="res"><div><div class="leg">'+r[0]+'<s>→</s>'+r[1]+'</div><div class="sub">'+r[2]+'</div></div><button type="button" data-a="'+r[0]+'" data-b="'+r[1]+'" data-c="'+r[2]+'">Demander un prix</button></div>';
+        });
+      } else {
+        html += '<p class="res-empty"><b>Aucune liaison régulière enregistrée sur ce trajet.</b><br>Nous réservons aussi les vols avec escale et les lignes saisonnières : envoyez-nous la demande et un conseiller cherche pour vous.</p>';
+        html += '<div class="res"><div><div class="leg">'+(document.getElementById('fFrom').value||'Départ')+'<s>→</s>'+(document.getElementById('fTo').value||'Arrivée')+'</div><div class="sub">Recherche sur mesure par un conseiller</div></div><button type="button" data-a="'+document.getElementById('fFrom').value+'" data-b="'+document.getElementById('fTo').value+'" data-c="">Demander un prix</button></div>';
+      }
+      finderResults.innerHTML = html;
+      finderResults.querySelectorAll('button').forEach(function(btn){
+        btn.addEventListener('click', function(){ fillQuoteForm(btn.dataset.a, btn.dataset.b, btn.dataset.c); });
+      });
+    }
+    finderForm.addEventListener('submit', function(e){ e.preventDefault(); runFinderSearch(); });
+  }
+
+  var boardBody = document.getElementById('boardBody');
+  if(boardBody){
+    function renderBoard(mode){
+      boardBody.innerHTML = ROUTES[mode].map(function(r){
+        return '<tr><td class="leg">'+r[0]+'<s>→</s>'+r[1]+'</td><td class="carrier">'+r[2]+'</td><td><a href="#contact">Demander un prix</a></td></tr>';
+      }).join('');
+    }
+    renderBoard('air');
+    document.querySelectorAll('.tab-btn').forEach(function(t){
+      t.addEventListener('click', function(){
+        document.querySelectorAll('.tab-btn').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+        t.setAttribute('aria-pressed','true');
+        renderBoard(t.dataset.mode);
+      });
+    });
   }
 
   /* ---------- Quote form (mailto, no backend) — validation + honeypot anti-spam ---------- */
