@@ -3,8 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SPVoyages — Démo premium</title>
+<title>SPVoyages — Vols secs, séjours et traversées en ferry vers le Maghreb</title>
+<meta name="description" content="Agence de voyages spécialiste du Maghreb : vols secs, séjours vol + hôtel et traversées en ferry vers l'Algérie, le Maroc et la Tunisie. Devis personnalisé sous 24h.">
+<meta name="robots" content="noindex, nofollow">
 <base href="/test/">
+<link rel="canonical" href="https://www.spvoyages.com/test">
+<link rel="icon" href="img/logo.png" type="image/png">
+<link rel="apple-touch-icon" href="img/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SPVoyages">
+<meta property="og:title" content="SPVoyages — Vols, séjours et traversées en ferry vers le Maghreb">
+<meta property="og:description" content="Vols secs, séjours vol + hôtel et traversées en ferry vers l'Algérie, le Maroc et la Tunisie. Devis personnalisé sous 24h.">
+<meta property="og:image" content="img/palmiers-hd.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#E63950">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,10 +24,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <style>
   :root{
-    --color-primary:#E63950;
+    --color-primary:#D42743;
     --color-primary-dark:#B91C34;
     --color-secondary:#F2795F;
-    --color-accent:#C4841A;
+    --color-accent:#A2620B;
     --color-accent-dark:#96650F;
     --color-bg:#FBF6EF;
     --color-fg:#2B211C;
@@ -34,6 +46,8 @@
     }
   }
   *{box-sizing:border-box;margin:0;padding:0;}
+  picture{display:contents;}
+  .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
   body{background:var(--color-bg);color:var(--color-fg);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:auto;}
   html.has-cursor, html.has-cursor body{cursor:none;}
   h1,h2,h3,.font-display{font-family:'Fraunces',serif;}
@@ -46,7 +60,7 @@
   /* ---------- PRELOADER ---------- */
   #preloader{position:fixed;inset:0;z-index:200;background:var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
   #preloader .pre-logo{font-family:'Fraunces',serif;font-weight:800;font-size:1.6rem;color:var(--color-fg);letter-spacing:-0.02em;}
-  #preloader .pre-logo span{color:var(--color-accent);}
+  #preloader .pre-logo span{color:var(--color-accent-dark);}
   .pre-bar{width:220px;height:3px;background:var(--color-border);border-radius:2px;overflow:hidden;}
   .pre-bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--color-primary),var(--color-accent));}
 
@@ -130,7 +144,7 @@
   /* ---------- SECTION HEAD ---------- */
   .section{padding:110px 0;}
   .section-head{text-align:center;max-width:640px;margin:0 auto 56px;}
-  .section-head .kicker{color:var(--color-accent);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:block;}
+  .section-head .kicker{color:var(--color-accent-dark);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:block;}
   .section-head h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:14px;}
   .section-head p{color:var(--color-muted);font-size:1.05rem;}
   .reveal{opacity:0;}
@@ -154,7 +168,7 @@
   .story-row.reverse .story-media{order:2;}
   .story-media{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:5/4;box-shadow:var(--shadow-lg);}
   .story-media img{position:absolute;left:0;top:-8%;width:100%;height:116%;object-fit:cover;}
-  .story-text .h-idx{display:block;font-family:'Fraunces',serif;font-weight:700;font-size:13px;color:var(--color-primary);letter-spacing:.12em;margin-bottom:12px;}
+  .story-text .h-idx{display:block;font-family:'Fraunces',serif;font-weight:700;font-size:13px;color:var(--color-primary-dark);letter-spacing:.12em;margin-bottom:12px;}
   .story-text h3{font-size:clamp(1.6rem,3.2vw,2.4rem);margin-bottom:14px;}
   .story-text p{color:var(--color-muted);font-size:1.05rem;line-height:1.65;max-width:420px;}
   @media (max-width:800px){
@@ -207,20 +221,28 @@
   .contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{outline:2px solid var(--color-primary);outline-offset:1px;}
   .contact-form textarea{resize:vertical;}
   .form-note{font-size:13px;color:var(--color-primary-dark);min-height:1em;}
+  .field-error{display:block;font-size:12px;color:var(--color-primary-dark);font-weight:600;min-height:1.2em;margin-top:2px;}
+  .contact-form input:invalid,.contact-form textarea:invalid{box-shadow:none;}
+  .contact-form input.error,.contact-form textarea.error{border-color:var(--color-primary);}
+  .hp-field{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
   .contact-cards{display:flex;flex-direction:column;gap:20px;}
   .contact-card{background:var(--color-card);border:1px solid var(--color-border);border-radius:var(--radius);padding:26px;}
+  .contact-map{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin-bottom:16px;background:var(--color-bg);border:1px solid var(--color-border);}
+  .contact-map iframe{width:100%;height:100%;border:0;display:block;}
+  .map-load-btn{position:absolute;inset:0;width:100%;height:100%;background:var(--color-bg);border:0;color:var(--color-primary-dark);font-weight:600;font-size:14px;cursor:pointer;}
+  .map-load-btn:hover{background:var(--color-border);}
   .contact-card h3{font-size:1.05rem;margin-bottom:10px;}
   .contact-line{font-size:14px;margin-bottom:4px;color:var(--color-muted);}
   .contact-line a{color:var(--color-primary-dark);font-weight:600;}
   .contact-hours{list-style:none;margin:14px 0;font-size:13px;color:var(--color-muted);}
   .contact-hours li{display:flex;justify-content:space-between;padding:3px 0;border-top:1px dashed var(--color-border);}
   .contact-hours li:first-child{border-top:none;}
-  .contact-dir{font-size:13px;font-weight:700;color:var(--color-accent);}
+  .contact-dir{font-size:13px;font-weight:700;color:var(--color-accent-dark);}
   .contact-email{display:block;text-align:center;background:var(--color-fg);color:#fff;border-radius:12px;padding:16px;font-weight:600;}
 
   /* ---------- FOOTER ---------- */
   .site-footer{background:var(--color-fg);color:rgba(255,255,255,.75);padding:56px 0 0;margin-top:40px;}
-  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px;padding-bottom:40px;}
+  .footer-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:32px;padding-bottom:40px;}
   @media (max-width:700px){.footer-grid{grid-template-columns:1fr;}}
   .footer-brand .nav-logo{color:#fff;margin-bottom:10px;}
   .footer-brand p{font-size:14px;max-width:320px;line-height:1.6;}
@@ -233,6 +255,15 @@
   .badge-fixed{position:fixed;bottom:20px;right:20px;z-index:60;background:var(--color-card);border:1px solid var(--color-border);border-radius:999px;padding:10px 18px;font-size:13px;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:8px;}
   .badge-fixed input{cursor:pointer;}
   .version-link{position:fixed;bottom:20px;left:20px;z-index:60;background:var(--color-card);border:1px solid var(--color-border);border-radius:999px;padding:10px 18px;font-size:13px;box-shadow:var(--shadow-md);}
+
+  /* ---------- COOKIE CONSENT ---------- */
+  .cookie-consent{position:fixed;left:20px;right:20px;bottom:20px;z-index:100;max-width:560px;margin:0 auto;background:var(--color-card);border:1px solid var(--color-border);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow-lg);}
+  .cookie-consent[hidden]{display:none;}
+  .cookie-consent p{font-size:13px;color:var(--color-muted);line-height:1.5;margin-bottom:14px;}
+  .cookie-consent p a{color:var(--color-primary-dark);font-weight:600;text-decoration:underline;}
+  .cookie-actions{display:flex;gap:10px;justify-content:flex-end;}
+  .cookie-actions .btn{padding:10px 20px;font-size:14px;}
+  @media (max-width:480px){.cookie-actions{flex-direction:column;} .cookie-actions .btn{width:100%;text-align:center;}}
 </style>
 </head>
 <body>
@@ -244,9 +275,17 @@
 
 <label class="badge-fixed"><input type="checkbox" id="motionToggle"> Mouvement réduit</label>
 
+<div class="cookie-consent" id="cookieConsent" role="dialog" aria-label="Consentement aux cookies" hidden>
+  <p>Nous utilisons des cookies pour mesurer l'audience du site (statistiques anonymisées). Vous pouvez accepter ou refuser — votre choix ne change pas votre navigation. <a href="politique-de-confidentialite.html">En savoir plus</a>.</p>
+  <div class="cookie-actions">
+    <button type="button" id="cookieRefuse" class="btn btn-ghost">Refuser</button>
+    <button type="button" id="cookieAccept" class="btn btn-primary">Accepter</button>
+  </div>
+</div>
+
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
-    <a class="nav-logo" href="#"><img src="img/logo.png" alt="SPVoyages">SPVoyages</a>
+    <a class="nav-logo" href="#top"><img src="img/logo.png" alt="SPVoyages">SPVoyages</a>
     <div class="nav-links">
       <a href="#destinations">Destinations</a>
       <a href="#avis">Avis</a>
@@ -256,18 +295,18 @@
   </div>
 </nav>
 
-<section class="hero">
-  <div class="hero-bg" id="heroBg"><img src="img/palmiers-hd.jpg" alt="" srcset="img/palmiers-hd.jpg 2400w" sizes="100vw"></div>
+<section class="hero" id="top">
+  <div class="hero-bg" id="heroBg"><picture><source srcset="img/palmiers-hd.webp" type="image/webp"><img src="img/palmiers-hd.jpg" alt="Plage bordée de palmiers, destination Maghreb" fetchpriority="high"></picture></div>
   <div class="container hero-inner">
-    <span class="eyebrow">✈ Agence de voyages depuis 2010</span>
+    <span class="eyebrow">✈ Agence de voyages depuis 2013</span>
     <h1 id="heroTitle">
       <span class="mask"><span class="inner">Votre prochain</span></span><br>
       <span class="mask"><span class="inner"><span class="accent">voyage</span> commence ici</span></span>
     </h1>
     <p class="sub reveal">Vols secs, séjours (vol + hôtel) et traversées en ferry vers l'Algérie, le Maroc, la Tunisie et au-delà — au meilleur prix, avec un accompagnement humain à chaque étape.</p>
     <div class="hero-actions reveal">
-      <div class="magnetic-wrap"><button class="btn btn-primary magnetic">Voir les offres</button></div>
-      <div class="magnetic-wrap"><button class="btn btn-ghost magnetic">Nous contacter</button></div>
+      <div class="magnetic-wrap"><a href="#liaisons" class="btn btn-primary magnetic">Voir les offres</a></div>
+      <div class="magnetic-wrap"><a href="#contact" class="btn btn-ghost magnetic">Nous contacter</a></div>
     </div>
   </div>
 </section>
@@ -288,7 +327,7 @@
   </div>
 </section>
 
-<section class="section map-section">
+<section class="section map-section" id="liaisons">
   <div class="container">
     <div class="section-head reveal">
       <span class="kicker">Nos liaisons</span>
@@ -345,7 +384,7 @@
     </div>
 
     <div class="story-row reveal">
-      <div class="story-media"><img src="img/algerie-hd.jpg" alt="Alger la blanche"></div>
+      <div class="story-media"><picture><source srcset="img/algerie-hd.webp" type="image/webp"><img src="img/algerie-hd.jpg" alt="Vue sur la baie d'Alger et la casbah, Algérie" loading="lazy"></picture></div>
       <div class="story-text">
         <span class="h-idx">01 — ALGÉRIE</span>
         <h3>Alger la blanche</h3>
@@ -354,7 +393,7 @@
     </div>
 
     <div class="story-row reverse reveal">
-      <div class="story-media"><img src="img/maroc-hd.jpg" alt="Marrakech et ses souks"></div>
+      <div class="story-media"><picture><source srcset="img/maroc-hd.webp" type="image/webp"><img src="img/maroc-hd.jpg" alt="Minaret de la Koutoubia à Marrakech avec l'Atlas enneigé en fond, Maroc" loading="lazy"></picture></div>
       <div class="story-text">
         <span class="h-idx">02 — MAROC</span>
         <h3>Marrakech &amp; ses souks</h3>
@@ -363,7 +402,7 @@
     </div>
 
     <div class="story-row reveal">
-      <div class="story-media"><img src="img/tunisie-hd.jpg" alt="Douceur méditerranéenne en Tunisie"></div>
+      <div class="story-media"><picture><source srcset="img/tunisie-hd.webp" type="image/webp"><img src="img/tunisie-hd.jpg" alt="Village de Sidi Bou Saïd avec vue sur la Méditerranée, Tunisie" loading="lazy"></picture></div>
       <div class="story-text">
         <span class="h-idx">03 — TUNISIE</span>
         <h3>Douceur méditerranéenne</h3>
@@ -381,10 +420,10 @@
       <p>Une sélection de nos destinations les plus demandées, prêtes à réserver.</p>
     </div>
     <div class="dest-grid" id="destGrid">
-      <div class="dest-card"><div class="clip"><img src="img/algerie-hd.jpg" alt="Algérie" loading="lazy"></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 199€</span><h3>Algérie</h3></div></div></div>
-      <div class="dest-card"><div class="clip"><img src="img/maroc-hd.jpg" alt="Maroc" loading="lazy"></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 179€</span><h3>Maroc</h3></div></div></div>
-      <div class="dest-card"><div class="clip"><img src="img/tunisie-hd.jpg" alt="Tunisie" loading="lazy"></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 189€</span><h3>Tunisie</h3></div></div></div>
-      <div class="dest-card"><div class="clip"><img src="img/voyage-hd.jpg" alt="Autres destinations" loading="lazy"></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 249€</span><h3>Et bien plus</h3></div></div></div>
+      <div class="dest-card"><div class="clip"><picture><source srcset="img/algerie-hd.webp" type="image/webp"><img src="img/algerie-hd.jpg" alt="Baie d'Alger vue depuis les hauteurs de la ville" loading="lazy"></picture></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 199€</span><h3>Algérie</h3></div></div></div>
+      <div class="dest-card"><div class="clip"><picture><source srcset="img/maroc-hd.webp" type="image/webp"><img src="img/maroc-hd.jpg" alt="Mosquée Koutoubia à Marrakech, Maroc" loading="lazy"></picture></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 179€</span><h3>Maroc</h3></div></div></div>
+      <div class="dest-card"><div class="clip"><picture><source srcset="img/tunisie-hd.webp" type="image/webp"><img src="img/tunisie-hd.jpg" alt="Sidi Bou Saïd au bord de la Méditerranée, Tunisie" loading="lazy"></picture></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 189€</span><h3>Tunisie</h3></div></div></div>
+      <div class="dest-card"><div class="clip"><picture><source srcset="img/voyage-hd.webp" type="image/webp"><img src="img/voyage-hd.jpg" alt="Voilier au coucher du soleil, autres destinations en croisière et ferry" loading="lazy"></picture></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 249€</span><h3>Et bien plus</h3></div></div></div>
     </div>
   </div>
 </section>
@@ -397,10 +436,10 @@
     </div>
     <div class="swiper reveal">
       <div class="swiper-wrapper">
-        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">« Une organisation parfaite pour notre voyage en famille en Algérie. Réactifs et de très bons conseils ! »</p><div class="testi-author">Karim B.</div><div class="testi-role">Alger, Algérie</div></div></div>
-        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">« Grâce à SPVoyages nous avons eu un tarif imbattable pour notre séjour au Maroc. Je recommande vivement. »</p><div class="testi-author">Sofia M.</div><div class="testi-role">Marrakech, Maroc</div></div></div>
-        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">« Réservation simple, équipe à l'écoute et suivi jusqu'au dernier moment. Un vrai plus par rapport aux sites en ligne. »</p><div class="testi-author">Yacine T.</div><div class="testi-role">Tunis, Tunisie</div></div></div>
-        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">« Deuxième fois que je passe par eux pour organiser mes vacances, toujours aussi efficaces. »</p><div class="testi-author">Leïla R.</div><div class="testi-role">Lyon, France</div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars" aria-hidden="true">★★★★★</div><span class="visually-hidden">Note : 5 sur 5</span><p class="testi-quote">« Une organisation parfaite pour notre voyage en famille en Algérie. Réactifs et de très bons conseils ! »</p><div class="testi-author">Karim B.</div><div class="testi-role">Alger, Algérie</div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars" aria-hidden="true">★★★★★</div><span class="visually-hidden">Note : 5 sur 5</span><p class="testi-quote">« Grâce à SPVoyages nous avons eu un tarif imbattable pour notre séjour au Maroc. Je recommande vivement. »</p><div class="testi-author">Sofia M.</div><div class="testi-role">Marrakech, Maroc</div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars" aria-hidden="true">★★★★★</div><span class="visually-hidden">Note : 5 sur 5</span><p class="testi-quote">« Réservation simple, équipe à l'écoute et suivi jusqu'au dernier moment. Un vrai plus par rapport aux sites en ligne. »</p><div class="testi-author">Yacine T.</div><div class="testi-role">Tunis, Tunisie</div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars" aria-hidden="true">★★★★★</div><span class="visually-hidden">Note : 5 sur 5</span><p class="testi-quote">« Deuxième fois que je passe par eux pour organiser mes vacances, toujours aussi efficaces. »</p><div class="testi-author">Leïla R.</div><div class="testi-role">Lyon, France</div></div></div>
       </div>
       <div class="swiper-pagination"></div>
       <div class="swiper-button-next"></div>
@@ -426,23 +465,27 @@
       <p>Un conseiller vous répond sous 24h — par téléphone, e-mail ou directement en agence.</p>
     </div>
     <div class="contact-grid">
-      <form class="contact-form reveal" id="quoteForm">
+      <form class="contact-form reveal" id="quoteForm" novalidate>
         <div class="form-row">
-          <label>Nom complet<input type="text" name="nom" required></label>
-          <label>Téléphone<input type="tel" name="tel"></label>
+          <label>Nom complet<input type="text" name="nom" required minlength="2" autocomplete="name"><span class="field-error" data-for="nom"></span></label>
+          <label>Téléphone<input type="tel" name="tel" autocomplete="tel" pattern="^[0-9 +().-]{6,}$"><span class="field-error" data-for="tel"></span></label>
         </div>
-        <label>E-mail<input type="email" name="email" required></label>
+        <label>E-mail<input type="email" name="email" required autocomplete="email"><span class="field-error" data-for="email"></span></label>
         <div class="form-row">
           <label>Destination<select name="destination"><option>Algérie</option><option>Maroc</option><option>Tunisie</option><option>Séjour (vol + hôtel)</option><option>Ferry</option><option>Autre</option></select></label>
-          <label>Nombre de voyageurs<input type="number" name="pax" min="1" value="1"></label>
+          <label>Nombre de voyageurs<input type="number" name="pax" min="1" max="20" value="1"></label>
         </div>
-        <label>Votre demande<textarea name="message" rows="4" placeholder="Dates envisagées, ville de départ, budget..."></textarea></label>
+        <label>Votre demande<textarea name="message" rows="4" placeholder="Dates envisagées, ville de départ, budget..." required minlength="10"></textarea><span class="field-error" data-for="message"></span></label>
+        <div class="hp-field" aria-hidden="true"><label>Laissez ce champ vide<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <div class="magnetic-wrap"><button type="submit" class="btn btn-primary magnetic">Envoyer ma demande</button></div>
-        <p class="form-note" id="formNote"></p>
+        <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
       </form>
 
       <div class="contact-cards">
         <div class="contact-card reveal">
+          <div class="contact-map" data-map-src="https://www.google.com/maps?q=SP+Voyages,+12+Rue+Montebello,+69003+Lyon&output=embed" data-map-title="Carte SP Voyages Lyon 3">
+            <button type="button" class="map-load-btn">📍 Afficher la carte</button>
+          </div>
           <h3>SP Voyages — Lyon 3</h3>
           <p class="contact-line">12 Rue Montebello, 69003 Lyon</p>
           <p class="contact-line"><a href="tel:+33478626508">04 78 62 65 08</a></p>
@@ -454,6 +497,9 @@
           <a class="contact-dir" href="https://www.google.com/maps/dir/?api=1&destination=SP%20Voyages%2C%2012%20Rue%20Montebello%2C%2069003%20Lyon" target="_blank" rel="noopener noreferrer">Itinéraire →</a>
         </div>
         <div class="contact-card reveal">
+          <div class="contact-map" data-map-src="https://www.google.com/maps?q=SP+Voyages+17+Avenue+Jean+Cagne+69200+Venissieux&output=embed" data-map-title="Carte SP Voyages Vénissieux">
+            <button type="button" class="map-load-btn">📍 Afficher la carte</button>
+          </div>
           <h3>SP Voyages — Vénissieux</h3>
           <p class="contact-line">17 Avenue Jean Cagne, 69200 Vénissieux</p>
           <p class="contact-line"><a href="tel:+33973880987">09 73 88 09 87</a></p>
@@ -473,7 +519,7 @@
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a class="nav-logo" href="#"><img src="img/logo.png" alt="SPVoyages">SPVoyages</a>
+      <a class="nav-logo" href="#top"><img src="img/logo.png" alt="SPVoyages">SPVoyages</a>
       <p>Vols secs et traversées vers l'Algérie, le Maroc et la Tunisie.</p>
     </div>
     <div class="footer-col">
@@ -488,8 +534,13 @@
       <span>Vénissieux — 09 73 88 09 87</span>
       <a href="mailto:contact@spvoyages.com">contact@spvoyages.com</a>
     </div>
+    <div class="footer-col">
+      <h4>Légal</h4>
+      <a href="politique-de-confidentialite.html">Politique de confidentialité</a>
+      <a href="cgu.html">CGU</a>
+    </div>
   </div>
-  <div class="footer-bottom">spvoyages.com · © 2026 SP Voyages</div>
+  <div class="footer-bottom">spvoyages.com · © 2026 SP Voyages · <a href="politique-de-confidentialite.html">Confidentialité</a> · <a href="cgu.html">CGU</a></div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -530,8 +581,11 @@
     gsap.ticker.add(function(time){ lenis.raf(time*1000); });
     gsap.ticker.lagSmoothing(0);
     document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      var href = a.getAttribute('href');
+      if(href.length < 2) return; // skip bare "#" links (invalid selector)
       a.addEventListener('click', function(e){
-        var target = document.querySelector(a.getAttribute('href'));
+        var target;
+        try{ target = document.querySelector(href); }catch(err){ return; }
         if(target){ e.preventDefault(); lenis.scrollTo(target, {offset:-70}); }
       });
     });
@@ -688,15 +742,99 @@
     }
   }
 
-  /* ---------- Quote form (mailto, no backend) ---------- */
+  /* ---------- Quote form (mailto, no backend) — validation + honeypot anti-spam ---------- */
   var form = document.getElementById('quoteForm'), note = document.getElementById('formNote');
+  var errorMsgs = {
+    nom: 'Merci d’indiquer votre nom (2 caractères minimum).',
+    email: 'Merci d’indiquer une adresse e-mail valide.',
+    tel: 'Numéro de téléphone invalide.',
+    message: 'Merci de préciser votre demande (10 caractères minimum).'
+  };
+  function showFieldError(field, msg){
+    var el = form.querySelector('.field-error[data-for="'+field.name+'"]');
+    if(el) el.textContent = msg || '';
+    field.classList.toggle('error', !!msg);
+  }
+  function validateField(field){
+    if(!field.checkValidity()){ showFieldError(field, errorMsgs[field.name] || 'Champ invalide.'); return false; }
+    showFieldError(field, '');
+    return true;
+  }
+  ['nom','email','tel','message'].forEach(function(name){
+    var field = form.elements[name];
+    if(field) field.addEventListener('blur', function(){ validateField(field); });
+  });
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    note.textContent = '';
+
+    if(form.elements['website'].value){
+      // Honeypot filled -> silently pretend success without sending (bot submission)
+      note.textContent = 'Votre demande a bien été envoyée.';
+      form.reset();
+      return;
+    }
+
+    var fields = ['nom','email','tel','message'].map(function(n){ return form.elements[n]; });
+    var allValid = fields.reduce(function(ok, f){ return validateField(f) && ok; }, true);
+    if(!allValid){
+      note.textContent = 'Merci de corriger les champs signalés en rouge.';
+      var firstInvalid = fields.find(function(f){ return !f.checkValidity(); });
+      // preventScroll avoids the native scroll-into-view fighting Lenis's own
+      // smooth-scroll animation (the two would otherwise leave the page stuck
+      // mid-scroll); we move the viewport ourselves via Lenis instead.
+      firstInvalid.focus({preventScroll:true});
+      if(lenis){ lenis.scrollTo(firstInvalid, {offset:-100}); }
+      else{ firstInvalid.scrollIntoView({block:'center'}); }
+      return;
+    }
+
     var d = new FormData(form);
     var body = 'Nom : '+d.get('nom')+'\nTéléphone : '+d.get('tel')+'\nDestination : '+d.get('destination')+'\nVoyageurs : '+d.get('pax')+'\n\n'+d.get('message');
     var mailto = 'mailto:contact@spvoyages.com?subject='+encodeURIComponent('Demande de devis — '+d.get('destination'))+'&body='+encodeURIComponent(body)+'&cc='+encodeURIComponent(d.get('email'));
     window.location.href = mailto;
     note.textContent = 'Votre messagerie va s’ouvrir avec la demande pré-remplie — il ne reste qu’à l’envoyer.';
+  });
+
+  /* ---------- Click-to-load maps (avoid loading Google's tracking iframe before the user asks) ---------- */
+  document.querySelectorAll('.contact-map').forEach(function(box){
+    box.querySelector('.map-load-btn').addEventListener('click', function(){
+      var iframe = document.createElement('iframe');
+      iframe.src = box.dataset.mapSrc;
+      iframe.title = box.dataset.mapTitle;
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      box.innerHTML = '';
+      box.appendChild(iframe);
+    });
+  });
+
+  /* ---------- Cookie consent + Google Analytics (loaded only after consent) ---------- */
+  var GA_MEASUREMENT_ID = ''; // <-- coller ici votre identifiant GA4 (ex: "G-XXXXXXX") une fois créé sur analytics.google.com
+  function loadAnalytics(){
+    if(!GA_MEASUREMENT_ID) return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ window.dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });
+  }
+  var consentBanner = document.getElementById('cookieConsent');
+  var savedConsent = null;
+  try{ savedConsent = localStorage.getItem('spv_cookie_consent'); }catch(e){}
+  if(savedConsent === 'accepted'){ loadAnalytics(); }
+  else if(savedConsent !== 'refused'){ consentBanner.hidden = false; }
+  document.getElementById('cookieAccept').addEventListener('click', function(){
+    try{ localStorage.setItem('spv_cookie_consent','accepted'); }catch(e){}
+    consentBanner.hidden = true;
+    loadAnalytics();
+  });
+  document.getElementById('cookieRefuse').addEventListener('click', function(){
+    try{ localStorage.setItem('spv_cookie_consent','refused'); }catch(e){}
+    consentBanner.hidden = true;
   });
 })();
 </script>
