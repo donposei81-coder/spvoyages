@@ -11,7 +11,11 @@ export default function SiteFooter() {
           </span>
         </a>
         <span>Vols secs et traversées vers l&apos;Algérie, le Maroc et la Tunisie</span>
-        <span>spvoyages.com · © 2026</span>
+        <span>
+          spvoyages.com · © 2026 ·{" "}
+          <a href="/politique-de-confidentialite">Confidentialité</a> ·{" "}
+          <a href="/cgu">CGU</a>
+        </span>
       </div>
     </footer>
   );
