@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPVoyages — Démo premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<style>
+  :root{
+    --color-primary:#E63950;
+    --color-primary-dark:#B91C34;
+    --color-secondary:#F2795F;
+    --color-accent:#C4841A;
+    --color-accent-dark:#96650F;
+    --color-bg:#FBF6EF;
+    --color-fg:#2B211C;
+    --color-card:#FFFFFF;
+    --color-muted:#6B5D53;
+    --color-border:#E8DDCE;
+    --color-dark:#221812;
+    --radius:20px;
+    --shadow-md: 0 10px 28px rgba(43,33,28,0.10);
+    --shadow-lg: 0 26px 64px rgba(43,33,28,0.18);
+    font-family:'Inter',sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --color-bg:#1B1310; --color-fg:#F5EBE1; --color-card:#251A15; --color-muted:#BFA695; --color-border:#3B2A22;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-bg);color:var(--color-fg);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:auto;}
+  html.has-cursor, html.has-cursor body{cursor:none;}
+  h1,h2,h3,.font-display{font-family:'Fraunces',serif;}
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+  .container{max-width:1240px;margin:0 auto;padding:0 24px;}
+  section{position:relative;}
+
+  /* ---------- PRELOADER ---------- */
+  #preloader{position:fixed;inset:0;z-index:200;background:var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+  #preloader .pre-logo{font-family:'Fraunces',serif;font-weight:800;font-size:1.6rem;color:var(--color-fg);letter-spacing:-0.02em;}
+  #preloader .pre-logo span{color:var(--color-accent);}
+  .pre-bar{width:220px;height:3px;background:var(--color-border);border-radius:2px;overflow:hidden;}
+  .pre-bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--color-primary),var(--color-accent));}
+
+  /* ---------- CUSTOM CURSOR ---------- */
+  .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%);will-change:transform;}
+  .cursor-dot{width:7px;height:7px;background:var(--color-accent);}
+  .cursor-ring{width:38px;height:38px;border:1.5px solid var(--color-primary);transition:width .2s ease,height .2s ease,border-color .2s ease,opacity .2s ease;opacity:.7;}
+  .cursor-ring.big{width:70px;height:70px;background:rgba(230,57,80,0.10);border-color:transparent;}
+  html:not(.has-cursor) .cursor-dot,html:not(.has-cursor) .cursor-ring{display:none;}
+
+  /* ---------- NAV ---------- */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(10px);background:rgba(251,246,239,0.75);border-bottom:1px solid var(--color-border);transform:translateY(0);transition:transform .4s cubic-bezier(.22,1,.36,1),background .3s ease;}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nav{background:rgba(34,24,18,0.7);}}
+  .nav.nav-hidden{transform:translateY(-100%);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1240px;margin:0 auto;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;}
+  .nav-logo img{height:34px;width:auto;border-radius:8px;}
+  .nav-links{display:flex;gap:32px;font-size:14px;font-weight:600;}
+  .nav-links a{opacity:.75;transition:opacity .2s;}
+  .nav-links a:hover{opacity:1;}
+  .nav-cta{background:var(--color-accent);color:#fff;padding:11px 22px;border-radius:999px;font-weight:600;font-size:14px;border:none;}
+  @media (max-width:800px){.nav-links{display:none;}}
+
+  /* ---------- MAGNETIC / BUTTONS ---------- */
+  .btn{display:inline-block;padding:17px 34px;border-radius:999px;font-weight:600;font-size:16px;border:none;position:relative;}
+  .btn-primary{background:var(--color-accent);color:#fff;box-shadow:var(--shadow-md);}
+  .btn-ghost{background:var(--color-card);color:var(--color-fg);border:1px solid var(--color-border);}
+  .magnetic-wrap{display:inline-block;}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;isolation:isolate;padding-top:80px;}
+  .hero-bg{position:absolute;inset:0;z-index:-2;}
+  .hero-bg img{width:100%;height:120%;object-fit:cover;transform:scale(1.15);}
+  .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgba(34,24,18,.6) 0%, rgba(34,24,18,.35) 45%, #FBF6EF 96%);}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .hero-bg::after{background:linear-gradient(180deg, rgba(34,24,18,.7) 0%, rgba(34,24,18,.5) 45%, var(--color-dark) 96%);}}
+  .hero-inner{position:relative;z-index:1;text-align:center;width:100%;padding-bottom:60px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,.35);padding:6px 16px;border-radius:999px;font-size:13px;font-weight:600;color:#fff;margin-bottom:26px;backdrop-filter:blur(6px);}
+  .hero h1{font-size:clamp(2.6rem,6.4vw,5rem);font-weight:800;line-height:1.04;letter-spacing:-0.02em;margin-bottom:22px;color:#fff;}
+  .mask{overflow:hidden;display:inline-block;vertical-align:top;padding-bottom:.08em;}
+  .mask .inner{display:inline-block;transform:translateY(115%);}
+  .hero h1 .accent{color:var(--color-secondary);}
+  .hero p.sub{font-size:clamp(1rem,2vw,1.25rem);color:rgba(255,255,255,.85);max-width:640px;margin:0 auto 38px;}
+  .hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+
+  /* ---------- MARQUEE STRIP ---------- */
+  .marquee-strip{position:relative;background:var(--color-fg);color:#fff;padding:16px 0;transform:skewY(-1.5deg);margin:-30px 0 0;z-index:2;overflow:hidden;}
+  .marquee-track{display:flex;white-space:nowrap;width:max-content;animation:marquee 26s linear infinite;}
+  .marquee-track span{font-family:'Fraunces',serif;font-weight:700;font-size:1.05rem;letter-spacing:.03em;padding:0 28px;display:inline-flex;align-items:center;gap:10px;}
+  .marquee-track span::after{content:'✦';color:var(--color-accent);font-size:.8rem;}
+  @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* ---------- STATS ---------- */
+  .stats{padding:70px 0 40px;}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;}
+  .stat-num{font-family:'Fraunces',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;color:var(--color-primary);}
+  .stat-label{color:var(--color-muted);font-size:14px;margin-top:6px;}
+  @media (max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---------- LIAISONS MAP (avion / ferry) ---------- */
+  .map-card{background:var(--color-dark);border-radius:24px;padding:28px;box-shadow:var(--shadow-lg);}
+  .map-tabs{display:flex;gap:4px;background:rgba(255,255,255,.07);padding:4px;margin-bottom:18px;width:fit-content;border-radius:10px;}
+  .mtab{border:0;background:transparent;color:#D8C9BE;font-family:inherit;font-size:14px;font-weight:600;min-height:40px;padding:8px 20px;border-radius:7px;cursor:pointer;transition:background .16s,color .16s;}
+  .mtab[aria-selected="true"]{background:var(--color-accent);color:var(--color-dark);}
+  .map{width:100%;height:auto;display:block;border-radius:12px;}
+  .map.off{display:none;}
+  .route{stroke-dasharray:600;stroke-dashoffset:600;}
+  .route.ferry{stroke-dasharray:5 4;stroke-dashoffset:0;opacity:0;}
+  .map-card.play #map-air .route{animation:draw 1.6s cubic-bezier(.65,0,.35,1) forwards;}
+  .map-card.play #map-ferry .route.ferry{animation:fadein .8s ease forwards;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  @keyframes fadein{to{opacity:.92;}}
+  @media (prefers-reduced-motion: reduce){.route{animation:none !important;stroke-dashoffset:0;opacity:.9;}}
+  .city-label{font-family:'Inter',sans-serif;font-size:11px;fill:#B9A99B;}
+  .city-label.big{font-size:13px;fill:#FFFFFF;font-weight:700;}
+  .map-key{display:flex;gap:24px;margin-top:16px;font-size:13px;color:#B9A99B;flex-wrap:wrap;}
+  .map-key span{display:flex;align-items:center;gap:8px;}
+  .map-key em{font-style:normal;}
+  .swatch{width:22px;height:2px;background:var(--color-accent);display:block;flex-shrink:0;}
+  .swatch.s2{background:none;border-top:2px dashed #F0B93A;height:0;}
+
+  /* ---------- SECTION HEAD ---------- */
+  .section{padding:110px 0;}
+  .section-head{text-align:center;max-width:640px;margin:0 auto 56px;}
+  .section-head .kicker{color:var(--color-accent);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:block;}
+  .section-head h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:14px;}
+  .section-head p{color:var(--color-muted);font-size:1.05rem;}
+  .reveal{opacity:0;}
+
+  /* ---------- FEATURE CARDS ---------- */
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  @media (max-width:900px){.features{grid-template-columns:1fr;}}
+  .feature-card{background:var(--color-card);border:1px solid var(--color-border);border-radius:var(--radius);padding:32px;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease;}
+  .feature-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .feature-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+  .feature-card:hover .feature-icon{transform:rotate(-8deg) scale(1.08);}
+  .feature-icon svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;}
+  .feature-card h3{font-size:1.15rem;margin-bottom:8px;}
+  .feature-card p{color:var(--color-muted);font-size:.95rem;line-height:1.6;}
+
+  /* ---------- STORY ROWS (alternating image/text, normal scroll) ---------- */
+  .stories{padding-top:20px;}
+  .story-row{display:grid;grid-template-columns:1.15fr 1fr;gap:56px;align-items:center;margin-bottom:90px;}
+  .story-row:last-child{margin-bottom:0;}
+  .story-row.reverse{grid-template-columns:1fr 1.15fr;}
+  .story-row.reverse .story-media{order:2;}
+  .story-media{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:5/4;box-shadow:var(--shadow-lg);}
+  .story-media img{position:absolute;left:0;top:-8%;width:100%;height:116%;object-fit:cover;}
+  .story-text .h-idx{display:block;font-family:'Fraunces',serif;font-weight:700;font-size:13px;color:var(--color-primary);letter-spacing:.12em;margin-bottom:12px;}
+  .story-text h3{font-size:clamp(1.6rem,3.2vw,2.4rem);margin-bottom:14px;}
+  .story-text p{color:var(--color-muted);font-size:1.05rem;line-height:1.65;max-width:420px;}
+  @media (max-width:800px){
+    .story-row,.story-row.reverse{grid-template-columns:1fr;gap:24px;margin-bottom:56px;}
+    .story-row.reverse .story-media{order:0;}
+  }
+
+  /* ---------- DESTINATION GRID ---------- */
+  .dest-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  @media (max-width:1000px){.dest-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.dest-grid{grid-template-columns:1fr;}}
+  .dest-card{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:3/4;box-shadow:var(--shadow-md);transform-style:preserve-3d;perspective:800px;}
+  .dest-card .clip{position:absolute;inset:0;clip-path:inset(100% 0 0 0);}
+  .dest-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,1,.36,1);}
+  .dest-card:hover img{transform:scale(1.1);}
+  .dest-overlay{position:absolute;inset:0;background:linear-gradient(0deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 55%);display:flex;align-items:flex-end;padding:20px;}
+  .dest-overlay .txt{color:#fff;}
+  .dest-overlay .price{display:inline-block;background:var(--color-accent);padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:8px;}
+  .dest-overlay h3{font-size:1.2rem;}
+
+  /* ---------- TESTIMONIALS (Swiper) ---------- */
+  .testi-section .swiper{padding:10px 4px 56px;max-width:720px;margin:0 auto;}
+  .testi-card{background:var(--color-card);border:1px solid var(--color-border);border-radius:24px;padding:44px;text-align:center;}
+  .testi-stars{color:var(--color-accent);margin-bottom:16px;font-size:1rem;letter-spacing:2px;}
+  .testi-quote{font-size:1.15rem;line-height:1.6;font-style:italic;margin-bottom:22px;}
+  .testi-author{font-weight:700;font-family:'Fraunces',serif;}
+  .testi-role{color:var(--color-muted);font-size:.9rem;}
+  .swiper-pagination-bullet{background:var(--color-border);opacity:1;}
+  .swiper-pagination-bullet-active{background:var(--color-primary);width:22px;border-radius:5px;}
+  .swiper-button-next,.swiper-button-prev{color:var(--color-primary);width:40px;height:40px;background:var(--color-card);border:1px solid var(--color-border);border-radius:50%;}
+  .swiper-button-next::after,.swiper-button-prev::after{font-size:15px;}
+
+  /* ---------- FINAL CTA ---------- */
+  .final-cta{position:relative;text-align:center;padding:130px 24px;border-radius:28px;margin:0 24px 40px;overflow:hidden;isolation:isolate;background:linear-gradient(160deg,var(--color-fg),var(--color-dark));}
+  @media(min-width:1288px){.final-cta{margin:0 auto 40px;max-width:1240px;}}
+  .final-cta .cta-marquee{position:absolute;inset:0;display:flex;align-items:center;opacity:.08;z-index:0;pointer-events:none;}
+  .final-cta .cta-marquee div{display:flex;white-space:nowrap;width:max-content;animation:marquee 18s linear infinite;}
+  .final-cta .cta-marquee span{font-family:'Fraunces',serif;font-weight:800;font-size:9rem;color:#fff;padding:0 30px;}
+  .final-cta h2{position:relative;font-size:clamp(1.9rem,4.5vw,3.2rem);margin-bottom:16px;color:#fff;}
+  .final-cta p{position:relative;color:rgba(255,255,255,.7);max-width:520px;margin:0 auto 32px;}
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:start;}
+  @media (max-width:900px){.contact-grid{grid-template-columns:1fr;}}
+  .contact-form{background:var(--color-card);border:1px solid var(--color-border);border-radius:var(--radius);padding:32px;display:flex;flex-direction:column;gap:16px;}
+  .contact-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:520px){.contact-form .form-row{grid-template-columns:1fr;}}
+  .contact-form label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--color-muted);}
+  .contact-form input,.contact-form select,.contact-form textarea{font-family:inherit;font-size:15px;padding:12px 14px;border-radius:10px;border:1px solid var(--color-border);background:var(--color-bg);color:var(--color-fg);}
+  .contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{outline:2px solid var(--color-primary);outline-offset:1px;}
+  .contact-form textarea{resize:vertical;}
+  .form-note{font-size:13px;color:var(--color-primary-dark);min-height:1em;}
+  .contact-cards{display:flex;flex-direction:column;gap:20px;}
+  .contact-card{background:var(--color-card);border:1px solid var(--color-border);border-radius:var(--radius);padding:26px;}
+  .contact-card h3{font-size:1.05rem;margin-bottom:10px;}
+  .contact-line{font-size:14px;margin-bottom:4px;color:var(--color-muted);}
+  .contact-line a{color:var(--color-primary-dark);font-weight:600;}
+  .contact-hours{list-style:none;margin:14px 0;font-size:13px;color:var(--color-muted);}
+  .contact-hours li{display:flex;justify-content:space-between;padding:3px 0;border-top:1px dashed var(--color-border);}
+  .contact-hours li:first-child{border-top:none;}
+  .contact-dir{font-size:13px;font-weight:700;color:var(--color-accent);}
+  .contact-email{display:block;text-align:center;background:var(--color-fg);color:#fff;border-radius:12px;padding:16px;font-weight:600;}
+
+  /* ---------- FOOTER ---------- */
+  .site-footer{background:var(--color-fg);color:rgba(255,255,255,.75);padding:56px 0 0;margin-top:40px;}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px;padding-bottom:40px;}
+  @media (max-width:700px){.footer-grid{grid-template-columns:1fr;}}
+  .footer-brand .nav-logo{color:#fff;margin-bottom:10px;}
+  .footer-brand p{font-size:14px;max-width:320px;line-height:1.6;}
+  .footer-col h4{color:#fff;font-size:14px;margin-bottom:14px;}
+  .footer-col{display:flex;flex-direction:column;gap:10px;font-size:14px;}
+  .footer-col a{opacity:.85;}
+  .footer-col a:hover{opacity:1;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.15);padding:20px 24px;text-align:center;font-size:13px;}
+
+  .badge-fixed{position:fixed;bottom:20px;right:20px;z-index:60;background:var(--color-card);border:1px solid var(--color-border);border-radius:999px;padding:10px 18px;font-size:13px;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:8px;}
+  .badge-fixed input{cursor:pointer;}
+  .version-link{position:fixed;bottom:20px;left:20px;z-index:60;background:var(--color-card);border:1px solid var(--color-border);border-radius:999px;padding:10px 18px;font-size:13px;box-shadow:var(--shadow-md);}
+</style>
+</head>
+<body>
+
+<div id="preloader"><div class="pre-logo">SP<span>Voyages</span></div><div class="pre-bar"><i></i></div></div>
+
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<a class="version-link" href="v1-simple.html">← Version simple</a>
+<label class="badge-fixed"><input type="checkbox" id="motionToggle"> Mouvement réduit</label>
+
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#"><img src="img/logo.png" alt="SPVoyages">SPVoyages</a>
+    <div class="nav-links">
+      <a href="#destinations">Destinations</a>
+      <a href="#avis">Avis</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="magnetic-wrap"><button class="nav-cta magnetic">Demander un devis</button></div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg" id="heroBg"><img src="img/palmiers-hd.jpg" alt="" srcset="img/palmiers-hd.jpg 2400w" sizes="100vw"></div>
+  <div class="container hero-inner">
+    <span class="eyebrow">✈ Agence de voyages depuis 2010</span>
+    <h1 id="heroTitle">
+      <span class="mask"><span class="inner">Votre prochain</span></span><br>
+      <span class="mask"><span class="inner"><span class="accent">voyage</span> commence ici</span></span>
+    </h1>
+    <p class="sub reveal">Vols secs, séjours (vol + hôtel) et traversées en ferry vers l'Algérie, le Maroc, la Tunisie et au-delà — au meilleur prix, avec un accompagnement humain à chaque étape.</p>
+    <div class="hero-actions reveal">
+      <div class="magnetic-wrap"><button class="btn btn-primary magnetic">Voir les offres</button></div>
+      <div class="magnetic-wrap"><button class="btn btn-ghost magnetic">Nous contacter</button></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-strip">
+  <div class="marquee-track" id="marqueeTrack">
+    <span>ALGÉRIE</span><span>MAROC</span><span>TUNISIE</span><span>SÉJOURS</span><span>FERRY</span><span>ESPAGNE</span><span>ITALIE</span>
+    <span>ALGÉRIE</span><span>MAROC</span><span>TUNISIE</span><span>SÉJOURS</span><span>FERRY</span><span>ESPAGNE</span><span>ITALIE</span>
+  </div>
+</div>
+
+<section class="stats">
+  <div class="container stats-grid">
+    <div class="stat-item"><div class="stat-num" data-count="15000">0</div><div class="stat-label">Voyageurs satisfaits</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="40">0</div><div class="stat-label">Destinations</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="15">0</div><div class="stat-label">Ans d'expérience</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="98">0</div><div class="stat-label">% clients satisfaits</div></div>
+  </div>
+</section>
+
+<section class="section map-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Nos liaisons</span>
+      <h2>Avion ou ferry, à vous de choisir</h2>
+      <p>Toutes nos liaisons au départ de Lyon en avion, ou en ferry depuis la France, l'Espagne et l'Italie.</p>
+    </div>
+    <div class="map-card reveal">
+      <div class="map-tabs" role="tablist">
+        <button type="button" class="mtab" data-map="air" aria-selected="true">Avion</button>
+        <button type="button" class="mtab" data-map="ferry" aria-selected="false">Ferry</button>
+      </div>
+      <svg class="map" id="map-air" viewBox="0 0 640 470" role="img" aria-label="Carte des vols au départ de Lyon vers le Maroc, l'Algérie et la Tunisie"><defs><linearGradient id="seaa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A2E4F"/><stop offset="1" stop-color="#07223C"/></linearGradient></defs><rect width="640" height="470" fill="url(#seaa)" rx="3"/><g stroke="#1B4A72" stroke-width=".5" opacity=".5"><line x1="0" y1="429" x2="640" y2="429"/><line x1="0" y1="324" x2="640" y2="324"/><line x1="0" y1="212" x2="640" y2="212"/><line x1="0" y1="91" x2="640" y2="91"/><line x1="38" y1="0" x2="38" y2="470"/><line x1="166" y1="0" x2="166" y2="470"/><line x1="294" y1="0" x2="294" y2="470"/><line x1="422" y1="0" x2="422" y2="470"/><line x1="550" y1="0" x2="550" y2="470"/></g><path d="M226 -87 210 -80 203 -81 195 -86 186 -85 190 -88 182 -90 169 -87 163 -89 160 -94 188 -107 193 -113 190 -115 189 -124 175 -121 185 -131 198 -136 209 -137 215 -134 213 -138 216 -139 220 -136 224 -136 220 -137 216 -142 220 -148 216 -152 220 -155 221 -162 213 -160 203 -171 202 -174 206 -180 217 -186 204 -186 193 -180 186 -182 179 -180 171 -182 169 -178 163 -183 162 -187 165 -187 175 -203 169 -209 171 -216 177 -217 170 -220 172 -224 161 -215 161 -221 166 -226 157 -219 157 -211 152 -199 150 -197 147 -198 149 -207 153 -212 150 -213 153 -227 162 -243 150 -236 144 -237 142 -241 137 -242 148 -246 144 -248 151 -254 152 -258 146 -263 146 -266 152 -269 147 -273 151 -280 162 -280 156 -286 158 -292 166 -293 164 -297 167 -304 174 -301 179 -303 181 -301 216 -305 212 -295 192 -283 191 -279 196 -278 189 -270 207 -274 241 -274 247 -271 249 -266 228 -237 210 -230 221 -231 226 -229 226 -227 208 -219 197 -222 216 -217 228 -219 239 -215 252 -205 263 -178 277 -172 292 -160 289 -157 297 -145 287 -149 278 -148 287 -147 301 -137 304 -131 296 -124 302 -121 309 -126 321 -125 330 -123 338 -117 339 -111 334 -100 326 -97 327 -93 325 -92 314 -90 317 -88 317 -85 305 -82 317 -79 331 -79 330 -74 321 -70 319 -67 300 -62 289 -64 274 -62 258 -66 260 -64 253 -61 242 -61 244 -58 242 -58 232 -58 218 -61 207 -58 200 -48 187 -52 173 -49 163 -42 150 -43 152 -46 158 -48 169 -56 177 -63 179 -68 184 -70 187 -74 214 -75 232 -90 226 -87Z M187 -136 191 -136 182 -131 178 -134 177 -138 184 -139 187 -136Z M164 -201 158 -202 156 -207 158 -209 162 -208 164 -201Z M146 -230 133 -228 136 -230 137 -234 133 -238 138 -239 147 -234 146 -230Z M138 -216 139 -208 133 -206 133 -212 128 -209 130 -214 138 -216Z M142 -213 140 -212 139 -215 143 -218 142 -220 148 -222 142 -213Z M135 -159 124 -158 124 -161 115 -169 107 -161 100 -161 93 -163 86 -170 96 -175 92 -178 101 -180 106 -188 110 -190 113 -189 117 -193 129 -195 137 -194 148 -182 144 -176 151 -177 154 -172 154 -170 149 -173 150 -168 152 -168 151 -165 145 -164 140 -158 135 -159Z M267 -60 262 -57 254 -59 261 -62 267 -60Z M538 26 541 27 537 38 546 39 554 44 559 40 562 42 561 51 553 50 551 53 554 59 549 56 538 58 536 53 533 53 531 58 525 65 526 69 524 70 519 66 520 64 511 59 510 54 502 59 502 61 494 68 487 66 475 68 468 61 467 55 459 54 454 57 455 59 453 61 447 62 450 58 450 55 452 50 458 46 460 41 472 33 474 31 471 29 475 27 480 29 489 24 511 24 514 23 510 22 514 19 522 22 529 22 538 26Z M375 217 383 219 377 226 373 228 366 226 364 222 358 224 355 222 366 215 375 212 375 217Z M404 215 393 213 393 210 403 211 404 215Z M331 237 326 237 329 233 336 233 331 237Z M248 130 251 133 258 135 258 139 261 138 275 142 279 145 287 145 293 148 311 148 312 144 329 148 331 154 338 152 345 156 351 154 362 156 368 154 377 154 379 158 375 158 378 166 348 181 321 187 313 192 317 195 310 197 286 223 289 233 300 240 281 250 274 263 276 266 260 267 252 271 240 285 232 284 223 286 183 286 175 291 162 293 157 299 150 301 140 298 134 289 131 288 130 286 135 282 131 284 118 276 119 274 105 276 102 267 104 264 110 257 115 256 116 253 112 253 106 247 108 241 114 237 115 233 111 232 101 219 112 219 116 216 118 211 114 208 120 204 117 188 135 176 133 173 127 172 125 166 111 165 105 168 92 167 86 169 84 167 86 164 83 161 68 166 67 162 72 158 69 158 71 155 69 153 69 149 63 150 66 145 58 141 59 136 67 132 80 131 83 130 83 126 97 122 114 127 145 125 179 130 202 128 216 131 221 129 235 132 248 130Z M-124 462 -126 467 -132 470 -138 463 -118 458 -124 462Z M-57 452 -60 452 -59 449 -49 446 -51 450 -57 452Z M-69 467 -73 469 -77 468 -70 466 -64 456 -60 455 -62 465 -69 467Z M-100 467 -101 474 -106 475 -110 472 -107 467 -100 467Z M-162 460 -166 455 -165 453 -161 453 -159 455 -162 460Z M-146 370 -133 372 -141 374 -147 372 -146 370Z M70 166 83 161 86 164 84 167 86 169 92 167 105 168 111 165 125 166 127 172 133 173 135 176 117 188 120 204 114 208 118 211 116 216 112 219 101 219 111 232 115 233 114 237 108 241 106 247 112 253 116 253 115 256 110 257 104 264 102 267 105 276 94 280 74 277 64 279 69 270 69 263 67 258 69 253 67 247 72 248 69 246 59 247 58 243 63 240 66 235 69 233 65 234 61 241 52 241 54 227 60 222 68 209 67 206 72 194 73 186 69 175 70 172 67 170 70 166Z M-20 723 -44 708 -49 700 -61 698 -66 693 -78 689 -89 688 -109 692 -121 691 -129 704 -127 690 -117 672 -116 659 -121 645 -128 638 -123 635 -127 636 -122 630 -121 622 -126 614 -131 614 -138 605 -141 606 -142 611 -140 601 -39 601 -42 572 -29 563 -13 560 -13 510 72 510 72 484 171 530 126 530 150 690 157 696 153 710 59 710 55 710 55 707 53 711 21 711 14 716 -0 707 -7 711 -11 721 -15 724 -20 723Z M3 767 1 764 3 757 -3 749 -8 750 -14 744 -12 740 -13 734 -19 729 -18 726 -20 723 -15 724 -11 721 -7 711 -0 707 14 716 21 711 53 711 55 707 55 710 59 710 153 710 157 696 150 690 126 530 171 530 324 605 324 610 336 615 339 620 351 621 356 625 375 629 378 637 374 643 380 645 403 642 401 690 394 705 385 710 384 713 373 711 371 713 328 714 319 720 300 721 277 718 244 729 240 735 228 733 221 739 219 744 211 744 210 751 204 753 193 749 184 754 186 760 180 762 181 768 174 773 159 777 160 785 158 790 154 791 153 803 145 803 140 807 135 806 134 797 130 798 130 800 124 798 123 804 116 804 115 808 106 806 102 802 90 807 89 805 83 802 81 792 73 792 79 786 69 780 69 776 61 766 54 766 55 769 46 773 31 770 20 776 15 770 5 774 -0 770 3 767Z M538 425 548 421 556 413 557 410 553 399 557 394 589 379 589 363 609 370 621 371 634 369 683 380 688 384 691 395 696 400 751 410 772 421 784 424 799 419 809 409 810 405 805 392 807 386 816 379 834 371 843 371 848 368 862 368 886 375 886 381 891 383 904 384 912 388 933 389 938 395 931 402 933 415 927 425 934 446 934 626 908 626 908 635 704 560 658 576 640 565 601 559 589 543 568 538 559 539 553 534 550 523 536 507 537 503 547 499 548 493 544 483 548 474 546 447 541 437 533 427 538 425Z M474 67 477 69 487 66 494 68 502 61 502 59 510 54 511 59 520 64 519 66 525 69 525 65 531 58 533 53 536 53 538 58 549 56 552 60 554 59 551 53 553 50 561 51 562 43 576 45 582 40 606 38 606 41 612 47 645 52 637 59 643 61 640 66 643 66 642 70 650 75 646 76 647 75 643 71 639 73 632 71 628 75 609 80 607 85 615 92 611 96 609 95 608 98 612 110 619 116 642 126 653 148 667 159 683 166 708 167 708 170 702 174 701 176 754 196 764 203 768 209 764 216 757 213 752 205 740 204 734 200 728 201 721 208 717 217 733 226 734 235 720 239 718 248 711 252 705 259 697 259 695 253 699 251 702 242 709 240 709 236 696 212 677 206 677 201 672 196 662 198 665 195 654 193 646 183 629 182 618 177 592 158 579 154 580 152 569 142 564 141 564 135 559 128 557 119 552 115 532 108 519 105 513 107 499 119 486 122 486 119 491 114 490 112 482 112 471 108 470 103 474 98 473 95 467 93 464 89 476 85 477 81 468 72 474 67Z M561 144 561 147 553 146 561 144Z M693 252 684 262 681 270 686 279 681 283 681 287 666 284 659 279 648 277 625 267 618 267 613 261 616 256 620 253 625 257 635 253 647 258 695 251 693 252Z M541 191 545 200 541 205 543 211 539 231 526 229 524 236 516 236 510 230 509 224 513 215 510 214 511 205 504 196 505 190 514 192 531 182 541 188 539 190 541 191Z M538 26 529 22 522 22 514 19 510 22 514 23 510 24 488 24 489 9 495 -4 503 -10 503 -13 485 -18 467 -18 462 -24 457 -26 460 -35 455 -37 451 -43 452 -47 457 -50 457 -53 453 -55 454 -57 448 -62 449 -66 444 -70 451 -73 450 -75 453 -82 447 -92 467 -95 469 -97 467 -100 474 -105 474 -110 466 -113 467 -116 474 -116 478 -126 479 -135 475 -138 479 -146 499 -147 503 -143 502 -141 505 -140 508 -145 512 -142 512 -138 513 -150 515 -153 530 -152 540 -145 545 -143 533 -152 524 -154 522 -157 522 -164 516 -166 516 -169 524 -171 524 -173 517 -181 516 -184 531 -181 541 -183 548 -180 551 -174 547 -171 554 -171 556 -169 560 -170 569 -166 576 -168 576 -162 571 -159 574 -156 586 -155 596 -161 604 -162 616 -171 628 -169 639 -161 646 -161 649 -152 659 -148 663 -133 656 -123 669 -113 667 -108 672 -100 668 -93 671 -84 677 -81 679 -76 677 -72 672 -64 669 -65 667 -69 661 -70 659 -69 662 -66 641 -61 626 -52 616 -52 609 -46 605 -50 604 -48 615 -38 612 -34 618 -26 647 -9 647 -2 644 -1 640 -2 637 4 621 11 626 16 625 21 629 22 628 27 619 22 607 21 606 23 594 24 577 29 573 26 562 25 560 30 555 32 556 30 550 26 544 25 538 26Z M645 -168 645 -165 640 -167 637 -164 631 -168 632 -173 638 -178 644 -174 642 -171 645 -168Z M658 -155 658 -153 651 -153 648 -160 658 -155Z M507 -181 507 -184 511 -189 509 -184 515 -184 507 -181Z M537 145 539 161 530 179 520 174 522 172 518 170 518 166 515 166 517 162 514 161 516 158 514 156 520 150 533 147 534 140 537 141 537 145Z M489 24 482 28 473 28 471 29 474 31 465 39 460 41 458 46 450 54 450 58 447 60 448 62 453 61 455 59 454 57 459 54 468 55 468 61 474 67 468 72 478 81 476 85 464 89 467 93 473 95 474 98 470 103 471 108 482 112 490 112 491 114 486 119 486 122 466 131 463 136 451 139 433 135 431 132 424 131 424 130 415 131 398 126 395 127 378 136 373 142 374 150 377 154 346 156 338 152 338 150 331 150 329 148 314 144 312 144 311 148 293 148 287 145 279 145 275 142 261 138 257 139 258 135 251 133 248 130 256 127 263 102 267 99 265 97 263 99 267 77 273 81 277 89 280 91 274 79 264 73 263 71 268 72 265 58 249 52 242 45 243 39 238 35 242 33 250 34 244 32 230 32 232 27 223 26 223 23 219 24 195 18 184 18 181 14 175 12 184 9 177 6 186 5 174 4 172 1 178 -3 212 -9 218 -8 225 -1 232 -4 243 -2 246 -5 248 -4 259 -4 254 -8 254 -19 248 -27 247 -32 262 -32 265 -24 290 -22 305 -26 298 -27 299 -33 326 -41 335 -48 335 -61 337 -66 359 -72 361 -65 365 -62 374 -63 378 -56 386 -54 389 -49 396 -50 401 -48 401 -40 411 -40 418 -45 419 -35 430 -32 435 -27 443 -28 448 -26 454 -27 462 -24 467 -18 485 -18 503 -13 503 -10 495 -4 489 9 487 22 489 24Z M403 -80 406 -79 410 -82 413 -81 416 -83 419 -80 423 -82 428 -77 435 -77 444 -72 439 -64 454 -57 453 -55 457 -53 457 -50 451 -44 447 -46 441 -39 441 -36 445 -31 443 -29 435 -27 430 -32 419 -35 418 -45 411 -40 401 -40 401 -48 396 -50 389 -49 386 -54 378 -56 374 -63 365 -62 361 -65 359 -72 380 -80 382 -76 386 -77 394 -75 403 -80Z" fill="#123C5F" stroke="#2C6A97" stroke-width=".7" stroke-linejoin="round"/><path d="M589 363 589 379 557 394 553 399 557 410 556 413 548 421 538 425 526 386 508 376 502 366 492 361 486 349 487 344 504 331 509 319 506 306 508 294 505 291 515 284 514 281 542 272 546 273 546 277 547 274 555 275 555 279 559 283 558 285 561 286 577 278 579 283 564 295 563 298 566 304 576 310 579 319 568 331 553 339 552 344 558 351 569 352 569 356 575 353 583 361 581 361 589 363Z M575 351 569 351 569 348 576 349 575 351Z M238 322 248 329 247 332 250 335 249 337 253 355 251 360 257 371 267 378 263 381 263 386 221 386 217 391 198 394 196 396 196 405 202 407 201 409 192 410 167 420 155 430 129 433 125 438 111 437 73 455 72 477 69 477 69 488 53 488 43 493 19 490 3 492 4 497 -6 508 -14 510 -24 533 -38 540 -46 550 -61 555 -67 567 -70 582 -80 590 -83 597 -141 599 -139 590 -124 576 -120 568 -121 567 -110 553 -115 556 -113 552 -87 535 -84 522 -75 505 -53 495 -43 477 -37 472 -1 464 26 448 33 442 47 427 47 420 42 415 43 400 55 386 58 376 76 361 118 346 132 329 143 307 159 304 158 308 160 310 176 319 184 320 200 318 207 319 218 315 222 321 238 322Z M514 281 515 284 505 291 508 294 506 306 509 319 505 330 487 344 486 349 492 361 502 366 508 376 526 386 538 425 533 427 541 437 546 447 548 474 544 483 547 497 537 503 536 507 550 523 551 529 557 538 561 540 568 538 589 543 601 559 486 609 444 636 378 645 374 642 378 637 375 629 356 625 351 621 339 620 336 615 324 610 324 605 179 533 72 484 72 456 83 450 112 437 125 438 129 433 155 430 167 420 192 410 201 409 202 407 196 405 196 396 198 394 217 391 221 386 263 386 263 381 267 378 257 371 251 360 253 355 249 337 250 335 247 332 248 329 238 322 252 320 267 311 283 305 293 306 302 298 327 291 361 289 371 285 385 284 391 282 416 282 430 288 450 283 460 278 472 282 480 281 479 278 497 283 514 281Z" fill="#16496E" stroke="#3B84B4" stroke-width=".9" stroke-linejoin="round"/><g fill="none" stroke-linecap="round"><path class="route air a0" d="M418 72 Q202 181 89 396" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a1" d="M418 72 Q214 162 100 355" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a2" d="M418 72 Q249 168 166 345" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a3" d="M418 72 Q178 187 49 421" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a4" d="M418 72 Q244 146 146 307" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a5" d="M418 72 Q290 174 246 331" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a6" d="M418 72 Q310 168 278 309" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a7" d="M418 72 Q299 174 261 326" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a8" d="M418 72 Q361 171 373 285" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a0" d="M418 72 Q387 180 424 285" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a1" d="M418 72 Q389 203 441 327" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a2" d="M418 72 Q397 197 452 312" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a3" d="M418 72 Q422 189 493 282" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a4" d="M418 72 Q405 190 464 294" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a5" d="M418 72 Q389 187 433 298" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a6" d="M418 72 Q453 200 555 284" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a7" d="M418 72 Q457 214 572 307" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/><path class="route air a8" d="M418 72 Q451 235 572 349" stroke="#2FA35E" stroke-width="1.4" opacity=".9"/></g><g><circle cx="49" cy="421" r="2.5" fill="#FFFFFF"/><text class="city-label" x="58" y="425" text-anchor="start">Agadir</text><circle cx="373" cy="285" r="2.5" fill="#FFFFFF"/><text class="city-label" x="382" y="289" text-anchor="start">Alger</text><circle cx="493" cy="282" r="2.5" fill="#FFFFFF"/><text class="city-label" x="502" y="286" text-anchor="start">Annaba</text><circle cx="452" cy="312" r="2.5" fill="#FFFFFF"/><text class="city-label" x="461" y="326" text-anchor="start">Batna</text><circle cx="441" cy="327" r="2.5" fill="#FFFFFF"/><text class="city-label" x="432" y="331" text-anchor="end">Biskra</text><circle cx="424" cy="285" r="2.5" fill="#FFFFFF"/><text class="city-label" x="433" y="278" text-anchor="start">Béjaïa</text><circle cx="100" cy="355" r="2.5" fill="#FFFFFF"/><text class="city-label" x="91" y="359" text-anchor="end">Casablanca</text><circle cx="464" cy="294" r="2.5" fill="#FFFFFF"/><text class="city-label" x="473" y="308" text-anchor="start">Constantine</text><circle cx="572" cy="349" r="2.5" fill="#FFFFFF"/><text class="city-label" x="581" y="353" text-anchor="start">Djerba</text><circle cx="166" cy="345" r="2.5" fill="#FFFFFF"/><text class="city-label" x="175" y="349" text-anchor="start">Fès</text><circle cx="418" cy="72" r="8.2" fill="none" stroke="#2FA35E" stroke-width="1" opacity=".5"/><circle cx="418" cy="72" r="4.2" fill="#FFFFFF"/><text class="city-label big" x="427" y="76" text-anchor="start">Lyon</text><circle cx="89" cy="396" r="2.5" fill="#FFFFFF"/><text class="city-label" x="98" y="400" text-anchor="start">Marrakech</text><circle cx="572" cy="307" r="2.5" fill="#FFFFFF"/><text class="city-label" x="581" y="311" text-anchor="start">Monastir</text><circle cx="278" cy="309" r="2.5" fill="#FFFFFF"/><text class="city-label" x="287" y="313" text-anchor="start">Oran</text><circle cx="246" cy="331" r="2.5" fill="#FFFFFF"/><text class="city-label" x="237" y="335" text-anchor="end">Oujda</text><circle cx="433" cy="298" r="2.5" fill="#FFFFFF"/><text class="city-label" x="424" y="312" text-anchor="end">Sétif</text><circle cx="146" cy="307" r="2.5" fill="#FFFFFF"/><text class="city-label" x="155" y="311" text-anchor="start">Tanger</text><circle cx="261" cy="326" r="2.5" fill="#FFFFFF"/><text class="city-label" x="270" y="330" text-anchor="start">Tlemcen</text><circle cx="555" cy="284" r="2.5" fill="#FFFFFF"/><text class="city-label" x="564" y="288" text-anchor="start">Tunis</text></g></svg>
+      <svg class="map off" id="map-ferry" viewBox="0 0 640 470" role="img" aria-label="Carte des traversées en ferry depuis la France, l'Espagne et l'Italie"><defs><linearGradient id="seab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A2E4F"/><stop offset="1" stop-color="#07223C"/></linearGradient></defs><rect width="640" height="470" fill="url(#seab)" rx="3"/><g stroke="#1B4A72" stroke-width=".5" opacity=".5"><line x1="0" y1="429" x2="640" y2="429"/><line x1="0" y1="324" x2="640" y2="324"/><line x1="0" y1="212" x2="640" y2="212"/><line x1="0" y1="91" x2="640" y2="91"/><line x1="38" y1="0" x2="38" y2="470"/><line x1="166" y1="0" x2="166" y2="470"/><line x1="294" y1="0" x2="294" y2="470"/><line x1="422" y1="0" x2="422" y2="470"/><line x1="550" y1="0" x2="550" y2="470"/></g><path d="M226 -87 210 -80 203 -81 195 -86 186 -85 190 -88 182 -90 169 -87 163 -89 160 -94 188 -107 193 -113 190 -115 189 -124 175 -121 185 -131 198 -136 209 -137 215 -134 213 -138 216 -139 220 -136 224 -136 220 -137 216 -142 220 -148 216 -152 220 -155 221 -162 213 -160 203 -171 202 -174 206 -180 217 -186 204 -186 193 -180 186 -182 179 -180 171 -182 169 -178 163 -183 162 -187 165 -187 175 -203 169 -209 171 -216 177 -217 170 -220 172 -224 161 -215 161 -221 166 -226 157 -219 157 -211 152 -199 150 -197 147 -198 149 -207 153 -212 150 -213 153 -227 162 -243 150 -236 144 -237 142 -241 137 -242 148 -246 144 -248 151 -254 152 -258 146 -263 146 -266 152 -269 147 -273 151 -280 162 -280 156 -286 158 -292 166 -293 164 -297 167 -304 174 -301 179 -303 181 -301 216 -305 212 -295 192 -283 191 -279 196 -278 189 -270 207 -274 241 -274 247 -271 249 -266 228 -237 210 -230 221 -231 226 -229 226 -227 208 -219 197 -222 216 -217 228 -219 239 -215 252 -205 263 -178 277 -172 292 -160 289 -157 297 -145 287 -149 278 -148 287 -147 301 -137 304 -131 296 -124 302 -121 309 -126 321 -125 330 -123 338 -117 339 -111 334 -100 326 -97 327 -93 325 -92 314 -90 317 -88 317 -85 305 -82 317 -79 331 -79 330 -74 321 -70 319 -67 300 -62 289 -64 274 -62 258 -66 260 -64 253 -61 242 -61 244 -58 242 -58 232 -58 218 -61 207 -58 200 -48 187 -52 173 -49 163 -42 150 -43 152 -46 158 -48 169 -56 177 -63 179 -68 184 -70 187 -74 214 -75 232 -90 226 -87Z M187 -136 191 -136 182 -131 178 -134 177 -138 184 -139 187 -136Z M164 -201 158 -202 156 -207 158 -209 162 -208 164 -201Z M146 -230 133 -228 136 -230 137 -234 133 -238 138 -239 147 -234 146 -230Z M138 -216 139 -208 133 -206 133 -212 128 -209 130 -214 138 -216Z M142 -213 140 -212 139 -215 143 -218 142 -220 148 -222 142 -213Z M135 -159 124 -158 124 -161 115 -169 107 -161 100 -161 93 -163 86 -170 96 -175 92 -178 101 -180 106 -188 110 -190 113 -189 117 -193 129 -195 137 -194 148 -182 144 -176 151 -177 154 -172 154 -170 149 -173 150 -168 152 -168 151 -165 145 -164 140 -158 135 -159Z M267 -60 262 -57 254 -59 261 -62 267 -60Z M538 26 541 27 537 38 546 39 554 44 559 40 562 42 561 51 553 50 551 53 554 59 549 56 538 58 536 53 533 53 531 58 525 65 526 69 524 70 519 66 520 64 511 59 510 54 502 59 502 61 494 68 487 66 475 68 468 61 467 55 459 54 454 57 455 59 453 61 447 62 450 58 450 55 452 50 458 46 460 41 472 33 474 31 471 29 475 27 480 29 489 24 511 24 514 23 510 22 514 19 522 22 529 22 538 26Z M375 217 383 219 377 226 373 228 366 226 364 222 358 224 355 222 366 215 375 212 375 217Z M404 215 393 213 393 210 403 211 404 215Z M331 237 326 237 329 233 336 233 331 237Z M248 130 251 133 258 135 258 139 261 138 275 142 279 145 287 145 293 148 311 148 312 144 329 148 331 154 338 152 345 156 351 154 362 156 368 154 377 154 379 158 375 158 378 166 348 181 321 187 313 192 317 195 310 197 286 223 289 233 300 240 281 250 274 263 276 266 260 267 252 271 240 285 232 284 223 286 183 286 175 291 162 293 157 299 150 301 140 298 134 289 131 288 130 286 135 282 131 284 118 276 119 274 105 276 102 267 104 264 110 257 115 256 116 253 112 253 106 247 108 241 114 237 115 233 111 232 101 219 112 219 116 216 118 211 114 208 120 204 117 188 135 176 133 173 127 172 125 166 111 165 105 168 92 167 86 169 84 167 86 164 83 161 68 166 67 162 72 158 69 158 71 155 69 153 69 149 63 150 66 145 58 141 59 136 67 132 80 131 83 130 83 126 97 122 114 127 145 125 179 130 202 128 216 131 221 129 235 132 248 130Z M-124 462 -126 467 -132 470 -138 463 -118 458 -124 462Z M-57 452 -60 452 -59 449 -49 446 -51 450 -57 452Z M-69 467 -73 469 -77 468 -70 466 -64 456 -60 455 -62 465 -69 467Z M-100 467 -101 474 -106 475 -110 472 -107 467 -100 467Z M-162 460 -166 455 -165 453 -161 453 -159 455 -162 460Z M-146 370 -133 372 -141 374 -147 372 -146 370Z M70 166 83 161 86 164 84 167 86 169 92 167 105 168 111 165 125 166 127 172 133 173 135 176 117 188 120 204 114 208 118 211 116 216 112 219 101 219 111 232 115 233 114 237 108 241 106 247 112 253 116 253 115 256 110 257 104 264 102 267 105 276 94 280 74 277 64 279 69 270 69 263 67 258 69 253 67 247 72 248 69 246 59 247 58 243 63 240 66 235 69 233 65 234 61 241 52 241 54 227 60 222 68 209 67 206 72 194 73 186 69 175 70 172 67 170 70 166Z M-20 723 -44 708 -49 700 -61 698 -66 693 -78 689 -89 688 -109 692 -121 691 -129 704 -127 690 -117 672 -116 659 -121 645 -128 638 -123 635 -127 636 -122 630 -121 622 -126 614 -131 614 -138 605 -141 606 -142 611 -140 601 -39 601 -42 572 -29 563 -13 560 -13 510 72 510 72 484 171 530 126 530 150 690 157 696 153 710 59 710 55 710 55 707 53 711 21 711 14 716 -0 707 -7 711 -11 721 -15 724 -20 723Z M3 767 1 764 3 757 -3 749 -8 750 -14 744 -12 740 -13 734 -19 729 -18 726 -20 723 -15 724 -11 721 -7 711 -0 707 14 716 21 711 53 711 55 707 55 710 59 710 153 710 157 696 150 690 126 530 171 530 324 605 324 610 336 615 339 620 351 621 356 625 375 629 378 637 374 643 380 645 403 642 401 690 394 705 385 710 384 713 373 711 371 713 328 714 319 720 300 721 277 718 244 729 240 735 228 733 221 739 219 744 211 744 210 751 204 753 193 749 184 754 186 760 180 762 181 768 174 773 159 777 160 785 158 790 154 791 153 803 145 803 140 807 135 806 134 797 130 798 130 800 124 798 123 804 116 804 115 808 106 806 102 802 90 807 89 805 83 802 81 792 73 792 79 786 69 780 69 776 61 766 54 766 55 769 46 773 31 770 20 776 15 770 5 774 -0 770 3 767Z M538 425 548 421 556 413 557 410 553 399 557 394 589 379 589 363 609 370 621 371 634 369 683 380 688 384 691 395 696 400 751 410 772 421 784 424 799 419 809 409 810 405 805 392 807 386 816 379 834 371 843 371 848 368 862 368 886 375 886 381 891 383 904 384 912 388 933 389 938 395 931 402 933 415 927 425 934 446 934 626 908 626 908 635 704 560 658 576 640 565 601 559 589 543 568 538 559 539 553 534 550 523 536 507 537 503 547 499 548 493 544 483 548 474 546 447 541 437 533 427 538 425Z M474 67 477 69 487 66 494 68 502 61 502 59 510 54 511 59 520 64 519 66 525 69 525 65 531 58 533 53 536 53 538 58 549 56 552 60 554 59 551 53 553 50 561 51 562 43 576 45 582 40 606 38 606 41 612 47 645 52 637 59 643 61 640 66 643 66 642 70 650 75 646 76 647 75 643 71 639 73 632 71 628 75 609 80 607 85 615 92 611 96 609 95 608 98 612 110 619 116 642 126 653 148 667 159 683 166 708 167 708 170 702 174 701 176 754 196 764 203 768 209 764 216 757 213 752 205 740 204 734 200 728 201 721 208 717 217 733 226 734 235 720 239 718 248 711 252 705 259 697 259 695 253 699 251 702 242 709 240 709 236 696 212 677 206 677 201 672 196 662 198 665 195 654 193 646 183 629 182 618 177 592 158 579 154 580 152 569 142 564 141 564 135 559 128 557 119 552 115 532 108 519 105 513 107 499 119 486 122 486 119 491 114 490 112 482 112 471 108 470 103 474 98 473 95 467 93 464 89 476 85 477 81 468 72 474 67Z M561 144 561 147 553 146 561 144Z M693 252 684 262 681 270 686 279 681 283 681 287 666 284 659 279 648 277 625 267 618 267 613 261 616 256 620 253 625 257 635 253 647 258 695 251 693 252Z M541 191 545 200 541 205 543 211 539 231 526 229 524 236 516 236 510 230 509 224 513 215 510 214 511 205 504 196 505 190 514 192 531 182 541 188 539 190 541 191Z M538 26 529 22 522 22 514 19 510 22 514 23 510 24 488 24 489 9 495 -4 503 -10 503 -13 485 -18 467 -18 462 -24 457 -26 460 -35 455 -37 451 -43 452 -47 457 -50 457 -53 453 -55 454 -57 448 -62 449 -66 444 -70 451 -73 450 -75 453 -82 447 -92 467 -95 469 -97 467 -100 474 -105 474 -110 466 -113 467 -116 474 -116 478 -126 479 -135 475 -138 479 -146 499 -147 503 -143 502 -141 505 -140 508 -145 512 -142 512 -138 513 -150 515 -153 530 -152 540 -145 545 -143 533 -152 524 -154 522 -157 522 -164 516 -166 516 -169 524 -171 524 -173 517 -181 516 -184 531 -181 541 -183 548 -180 551 -174 547 -171 554 -171 556 -169 560 -170 569 -166 576 -168 576 -162 571 -159 574 -156 586 -155 596 -161 604 -162 616 -171 628 -169 639 -161 646 -161 649 -152 659 -148 663 -133 656 -123 669 -113 667 -108 672 -100 668 -93 671 -84 677 -81 679 -76 677 -72 672 -64 669 -65 667 -69 661 -70 659 -69 662 -66 641 -61 626 -52 616 -52 609 -46 605 -50 604 -48 615 -38 612 -34 618 -26 647 -9 647 -2 644 -1 640 -2 637 4 621 11 626 16 625 21 629 22 628 27 619 22 607 21 606 23 594 24 577 29 573 26 562 25 560 30 555 32 556 30 550 26 544 25 538 26Z M645 -168 645 -165 640 -167 637 -164 631 -168 632 -173 638 -178 644 -174 642 -171 645 -168Z M658 -155 658 -153 651 -153 648 -160 658 -155Z M507 -181 507 -184 511 -189 509 -184 515 -184 507 -181Z M537 145 539 161 530 179 520 174 522 172 518 170 518 166 515 166 517 162 514 161 516 158 514 156 520 150 533 147 534 140 537 141 537 145Z M489 24 482 28 473 28 471 29 474 31 465 39 460 41 458 46 450 54 450 58 447 60 448 62 453 61 455 59 454 57 459 54 468 55 468 61 474 67 468 72 478 81 476 85 464 89 467 93 473 95 474 98 470 103 471 108 482 112 490 112 491 114 486 119 486 122 466 131 463 136 451 139 433 135 431 132 424 131 424 130 415 131 398 126 395 127 378 136 373 142 374 150 377 154 346 156 338 152 338 150 331 150 329 148 314 144 312 144 311 148 293 148 287 145 279 145 275 142 261 138 257 139 258 135 251 133 248 130 256 127 263 102 267 99 265 97 263 99 267 77 273 81 277 89 280 91 274 79 264 73 263 71 268 72 265 58 249 52 242 45 243 39 238 35 242 33 250 34 244 32 230 32 232 27 223 26 223 23 219 24 195 18 184 18 181 14 175 12 184 9 177 6 186 5 174 4 172 1 178 -3 212 -9 218 -8 225 -1 232 -4 243 -2 246 -5 248 -4 259 -4 254 -8 254 -19 248 -27 247 -32 262 -32 265 -24 290 -22 305 -26 298 -27 299 -33 326 -41 335 -48 335 -61 337 -66 359 -72 361 -65 365 -62 374 -63 378 -56 386 -54 389 -49 396 -50 401 -48 401 -40 411 -40 418 -45 419 -35 430 -32 435 -27 443 -28 448 -26 454 -27 462 -24 467 -18 485 -18 503 -13 503 -10 495 -4 489 9 487 22 489 24Z M403 -80 406 -79 410 -82 413 -81 416 -83 419 -80 423 -82 428 -77 435 -77 444 -72 439 -64 454 -57 453 -55 457 -53 457 -50 451 -44 447 -46 441 -39 441 -36 445 -31 443 -29 435 -27 430 -32 419 -35 418 -45 411 -40 401 -40 401 -48 396 -50 389 -49 386 -54 378 -56 374 -63 365 -62 361 -65 359 -72 380 -80 382 -76 386 -77 394 -75 403 -80Z" fill="#123C5F" stroke="#2C6A97" stroke-width=".7" stroke-linejoin="round"/><path d="M589 363 589 379 557 394 553 399 557 410 556 413 548 421 538 425 526 386 508 376 502 366 492 361 486 349 487 344 504 331 509 319 506 306 508 294 505 291 515 284 514 281 542 272 546 273 546 277 547 274 555 275 555 279 559 283 558 285 561 286 577 278 579 283 564 295 563 298 566 304 576 310 579 319 568 331 553 339 552 344 558 351 569 352 569 356 575 353 583 361 581 361 589 363Z M575 351 569 351 569 348 576 349 575 351Z M238 322 248 329 247 332 250 335 249 337 253 355 251 360 257 371 267 378 263 381 263 386 221 386 217 391 198 394 196 396 196 405 202 407 201 409 192 410 167 420 155 430 129 433 125 438 111 437 73 455 72 477 69 477 69 488 53 488 43 493 19 490 3 492 4 497 -6 508 -14 510 -24 533 -38 540 -46 550 -61 555 -67 567 -70 582 -80 590 -83 597 -141 599 -139 590 -124 576 -120 568 -121 567 -110 553 -115 556 -113 552 -87 535 -84 522 -75 505 -53 495 -43 477 -37 472 -1 464 26 448 33 442 47 427 47 420 42 415 43 400 55 386 58 376 76 361 118 346 132 329 143 307 159 304 158 308 160 310 176 319 184 320 200 318 207 319 218 315 222 321 238 322Z M514 281 515 284 505 291 508 294 506 306 509 319 505 330 487 344 486 349 492 361 502 366 508 376 526 386 538 425 533 427 541 437 546 447 548 474 544 483 547 497 537 503 536 507 550 523 551 529 557 538 561 540 568 538 589 543 601 559 486 609 444 636 378 645 374 642 378 637 375 629 356 625 351 621 339 620 336 615 324 610 324 605 179 533 72 484 72 456 83 450 112 437 125 438 129 433 155 430 167 420 192 410 201 409 202 407 196 405 196 396 198 394 217 391 221 386 263 386 263 381 267 378 257 371 251 360 253 355 249 337 250 335 247 332 248 329 238 322 252 320 267 311 283 305 293 306 302 298 327 291 361 289 371 285 385 284 391 282 416 282 430 288 450 283 460 278 472 282 480 281 479 278 497 283 514 281Z" fill="#16496E" stroke="#3B84B4" stroke-width=".9" stroke-linejoin="round"/><g fill="none" stroke-linecap="round"><path class="route ferry a0" d="M389 131 Q252 197 146 307" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a1" d="M389 131 Q287 210 219 320" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a2" d="M350 179 Q237 225 146 307" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a3" d="M350 179 Q272 238 219 320" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a4" d="M231 283 Q222 299 219 318" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a5" d="M155 299 Q150 302 146 307" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a6" d="M155 299 Q185 315 219 320" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a7" d="M432 133 Q389 204 373 285" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a8" d="M432 133 Q414 209 424 285" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a0" d="M389 131 Q367 207 373 285" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a1" d="M389 131 Q393 211 424 285" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a2" d="M389 131 Q417 214 471 283" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a3" d="M350 179 Q352 234 373 285" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a4" d="M350 179 Q302 237 278 309" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a5" d="M285 224 Q274 266 278 309" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a6" d="M285 224 Q284 265 297 304" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a7" d="M231 283 Q252 300 278 309" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a8" d="M231 283 Q236 304 247 322" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a0" d="M523 106 Q523 198 555 284" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/><path class="route ferry a1" d="M432 133 Q480 220 555 284" stroke="#F0B93A" stroke-width="1.8" stroke-dasharray="5 4" opacity=".92"/></g><g><circle cx="373" cy="285" r="2.5" fill="#FFFFFF"/><text class="city-label" x="382" y="289" text-anchor="start">Alger</text><circle cx="155" cy="299" r="8.2" fill="none" stroke="#2FA35E" stroke-width="1" opacity=".5"/><circle cx="155" cy="299" r="4.2" fill="#FFFFFF"/><text class="city-label big" x="146" y="292" text-anchor="end">Algésiras</text><circle cx="231" cy="283" r="8.2" fill="none" stroke="#2FA35E" stroke-width="1" opacity=".5"/><circle cx="231" cy="283" r="4.2" fill="#FFFFFF"/><text class="city-label big" x="240" y="287" text-anchor="start">Almería</text><circle cx="350" cy="179" r="8.2" fill="none" stroke="#2FA35E" stroke-width="1" opacity=".5"/><circle cx="350" cy="179" r="4.2" fill="#FFFFFF"/><text class="city-label big" x="359" y="183" text-anchor="start">Barcelone</text><circle cx="424" cy="285" r="2.5" fill="#FFFFFF"/><text class="city-label" x="424" y="274" text-anchor="middle">Béjaïa</text><circle cx="247" cy="322" r="2.5" fill="#FFFFFF"/><text class="city-label" x="256" y="336" text-anchor="start">Ghazaouet</text><circle cx="523" cy="106" r="8.2" fill="none" stroke="#2FA35E" stroke-width="1" opacity=".5"/><circle cx="523" cy="106" r="4.2" fill="#FFFFFF"/><text class="city-label big" x="532" y="110" text-anchor="start">Gênes</text><circle cx="432" cy="133" r="8.2" fill="none" stroke="#2FA35E" stroke-width="1" opacity=".5"/><circle cx="432" cy="133" r="4.2" fill="#FFFFFF"/><text class="city-label big" x="441" y="137" text-anchor="start">Marseille</text><circle cx="219" cy="318" r="2.5" fill="#FFFFFF"/><text class="city-label" x="210" y="322" text-anchor="end">Melilla</text><circle cx="297" cy="304" r="2.5" fill="#FFFFFF"/><text class="city-label" x="306" y="308" text-anchor="start">Mostaganem</text><circle cx="219" cy="320" r="2.5" fill="#FFFFFF"/><text class="city-label" x="210" y="304" text-anchor="end">Nador</text><circle cx="278" cy="309" r="2.5" fill="#FFFFFF"/><text class="city-label" x="269" y="302" text-anchor="end">Oran</text><circle cx="471" cy="283" r="2.5" fill="#FFFFFF"/><text class="city-label" x="480" y="287" text-anchor="start">Skikda</text><circle cx="389" cy="131" r="8.2" fill="none" stroke="#2FA35E" stroke-width="1" opacity=".5"/><circle cx="389" cy="131" r="4.2" fill="#FFFFFF"/><text class="city-label big" x="380" y="135" text-anchor="end">Sète</text><circle cx="146" cy="307" r="2.5" fill="#FFFFFF"/><text class="city-label" x="137" y="311" text-anchor="end">Tanger</text><circle cx="555" cy="284" r="2.5" fill="#FFFFFF"/><text class="city-label" x="564" y="288" text-anchor="start">Tunis</text><circle cx="285" cy="224" r="8.2" fill="none" stroke="#2FA35E" stroke-width="1" opacity=".5"/><circle cx="285" cy="224" r="4.2" fill="#FFFFFF"/><text class="city-label big" x="294" y="228" text-anchor="start">Valence</text></g></svg>
+      <div class="map-key" id="mapKey">
+        <span><i class="swatch"></i><em>18 liaisons aériennes au départ de Lyon</em></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" style="padding-top:20px;">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Pourquoi nous choisir</span>
+      <h2>Une agence à taille humaine</h2>
+      <p>Un accompagnement personnalisé, des prix négociés et une équipe joignable avant, pendant et après votre voyage.</p>
+    </div>
+    <div class="features">
+      <div class="feature-card reveal magnetic">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5L12 2z"/></svg></div>
+        <h3>Meilleurs tarifs</h3>
+        <p>Nous négocions directement avec les compagnies aériennes et maritimes pour vous garantir le meilleur prix.</p>
+      </div>
+      <div class="feature-card reveal magnetic">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2C7 2 4 6 4 10c0 6 8 12 8 12s8-6 8-12c0-4-3-8-8-8z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <h3>Destinations sur mesure</h3>
+        <p>Maghreb, Europe, vols secs, séjours vol + hôtel ou traversées en ferry... nous construisons l'itinéraire qui correspond à votre budget et vos envies.</p>
+      </div>
+      <div class="feature-card reveal magnetic">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg></div>
+        <h3>Support réactif</h3>
+        <p>Une équipe disponible par téléphone et en agence pour répondre à toutes vos questions rapidement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section stories">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Nos coups de cœur</span>
+      <h2>Trois destinations, une infinité de souvenirs</h2>
+    </div>
+
+    <div class="story-row reveal">
+      <div class="story-media"><img src="img/algerie-hd.jpg" alt="Alger la blanche"></div>
+      <div class="story-text">
+        <span class="h-idx">01 — ALGÉRIE</span>
+        <h3>Alger la blanche</h3>
+        <p>Baie majestueuse, casbah historique et côtes méditerranéennes à couper le souffle.</p>
+      </div>
+    </div>
+
+    <div class="story-row reverse reveal">
+      <div class="story-media"><img src="img/maroc-hd.jpg" alt="Marrakech et ses souks"></div>
+      <div class="story-text">
+        <span class="h-idx">02 — MAROC</span>
+        <h3>Marrakech &amp; ses souks</h3>
+        <p>Entre médinas colorées, désert doré et montagnes de l'Atlas.</p>
+      </div>
+    </div>
+
+    <div class="story-row reveal">
+      <div class="story-media"><img src="img/tunisie-hd.jpg" alt="Douceur méditerranéenne en Tunisie"></div>
+      <div class="story-text">
+        <span class="h-idx">03 — TUNISIE</span>
+        <h3>Douceur méditerranéenne</h3>
+        <p>Plages de sable fin, ruines antiques et hospitalité légendaire.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="destinations">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Destinations populaires</span>
+      <h2>Où partez-vous cette année ?</h2>
+      <p>Une sélection de nos destinations les plus demandées, prêtes à réserver.</p>
+    </div>
+    <div class="dest-grid" id="destGrid">
+      <div class="dest-card"><div class="clip"><img src="img/algerie-hd.jpg" alt="Algérie" loading="lazy"></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 199€</span><h3>Algérie</h3></div></div></div>
+      <div class="dest-card"><div class="clip"><img src="img/maroc-hd.jpg" alt="Maroc" loading="lazy"></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 179€</span><h3>Maroc</h3></div></div></div>
+      <div class="dest-card"><div class="clip"><img src="img/tunisie-hd.jpg" alt="Tunisie" loading="lazy"></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 189€</span><h3>Tunisie</h3></div></div></div>
+      <div class="dest-card"><div class="clip"><img src="img/voyage-hd.jpg" alt="Autres destinations" loading="lazy"></div><div class="dest-overlay"><div class="txt"><span class="price">Dès 249€</span><h3>Et bien plus</h3></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section testi-section" id="avis">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Témoignages</span>
+      <h2>Ce que disent nos voyageurs</h2>
+    </div>
+    <div class="swiper reveal">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">« Une organisation parfaite pour notre voyage en famille en Algérie. Réactifs et de très bons conseils ! »</p><div class="testi-author">Karim B.</div><div class="testi-role">Alger, Algérie</div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">« Grâce à SPVoyages nous avons eu un tarif imbattable pour notre séjour au Maroc. Je recommande vivement. »</p><div class="testi-author">Sofia M.</div><div class="testi-role">Marrakech, Maroc</div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">« Réservation simple, équipe à l'écoute et suivi jusqu'au dernier moment. Un vrai plus par rapport aux sites en ligne. »</p><div class="testi-author">Yacine T.</div><div class="testi-role">Tunis, Tunisie</div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">« Deuxième fois que je passe par eux pour organiser mes vacances, toujours aussi efficaces. »</p><div class="testi-author">Leïla R.</div><div class="testi-role">Lyon, France</div></div></div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="final-cta reveal">
+    <div class="cta-marquee"><div><span>RÉSERVEZ MAINTENANT</span><span>RÉSERVEZ MAINTENANT</span><span>RÉSERVEZ MAINTENANT</span></div></div>
+    <h2>Prêt à réserver votre prochain voyage ?</h2>
+    <p>Contactez notre équipe dès aujourd'hui et recevez un devis personnalisé sous 24h.</p>
+    <div class="magnetic-wrap"><a href="#contact" class="btn btn-primary magnetic">Demander un devis gratuit</a></div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Contact</span>
+      <h2>Parlons de votre voyage</h2>
+      <p>Un conseiller vous répond sous 24h — par téléphone, e-mail ou directement en agence.</p>
+    </div>
+    <div class="contact-grid">
+      <form class="contact-form reveal" id="quoteForm">
+        <div class="form-row">
+          <label>Nom complet<input type="text" name="nom" required></label>
+          <label>Téléphone<input type="tel" name="tel"></label>
+        </div>
+        <label>E-mail<input type="email" name="email" required></label>
+        <div class="form-row">
+          <label>Destination<select name="destination"><option>Algérie</option><option>Maroc</option><option>Tunisie</option><option>Séjour (vol + hôtel)</option><option>Ferry</option><option>Autre</option></select></label>
+          <label>Nombre de voyageurs<input type="number" name="pax" min="1" value="1"></label>
+        </div>
+        <label>Votre demande<textarea name="message" rows="4" placeholder="Dates envisagées, ville de départ, budget..."></textarea></label>
+        <div class="magnetic-wrap"><button type="submit" class="btn btn-primary magnetic">Envoyer ma demande</button></div>
+        <p class="form-note" id="formNote"></p>
+      </form>
+
+      <div class="contact-cards">
+        <div class="contact-card reveal">
+          <h3>SP Voyages — Lyon 3</h3>
+          <p class="contact-line">12 Rue Montebello, 69003 Lyon</p>
+          <p class="contact-line"><a href="tel:+33478626508">04 78 62 65 08</a></p>
+          <ul class="contact-hours">
+            <li><span>Lun – Ven</span><span>9h30–12h · 14h–18h</span></li>
+            <li><span>Samedi</span><span>9h30–12h</span></li>
+            <li><span>Dimanche</span><span>Fermé</span></li>
+          </ul>
+          <a class="contact-dir" href="https://www.google.com/maps/dir/?api=1&destination=SP%20Voyages%2C%2012%20Rue%20Montebello%2C%2069003%20Lyon" target="_blank" rel="noopener noreferrer">Itinéraire →</a>
+        </div>
+        <div class="contact-card reveal">
+          <h3>SP Voyages — Vénissieux</h3>
+          <p class="contact-line">17 Avenue Jean Cagne, 69200 Vénissieux</p>
+          <p class="contact-line"><a href="tel:+33973880987">09 73 88 09 87</a></p>
+          <ul class="contact-hours">
+            <li><span>Lun – Ven</span><span>9h30–12h · 14h–18h</span></li>
+            <li><span>Samedi</span><span>9h30–12h</span></li>
+            <li><span>Dimanche</span><span>Fermé</span></li>
+          </ul>
+          <a class="contact-dir" href="https://www.google.com/maps/dir/?api=1&destination=SP%20Voyages%2C%2017%20Avenue%20Jean%20Cagne%2C%2069200%20V%C3%A9nissieux" target="_blank" rel="noopener noreferrer">Itinéraire →</a>
+        </div>
+        <a class="contact-email reveal" href="mailto:contact@spvoyages.com">✉ contact@spvoyages.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="#"><img src="img/logo.png" alt="SPVoyages">SPVoyages</a>
+      <p>Vols secs et traversées vers l'Algérie, le Maroc et la Tunisie.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <a href="#destinations">Destinations</a>
+      <a href="#avis">Avis</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Agences</h4>
+      <span>Lyon 3 — 04 78 62 65 08</span>
+      <span>Vénissieux — 09 73 88 09 87</span>
+      <a href="mailto:contact@spvoyages.com">contact@spvoyages.com</a>
+    </div>
+  </div>
+  <div class="footer-bottom">spvoyages.com · © 2026 SP Voyages</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var coarsePointer = window.matchMedia('(pointer: coarse)');
+  var toggle = document.getElementById('motionToggle');
+  var motionOff = function(){ return reduced.matches || toggle.checked; };
+
+  /* ---------- Preloader ---------- */
+  var preloader = document.getElementById('preloader');
+  var bar = preloader.querySelector('.pre-bar i');
+  var pct = 0;
+  var loadTimer = setInterval(function(){
+    pct = Math.min(pct + (motionOff() ? 40 : Math.random()*18), 100);
+    bar.style.width = pct + '%';
+    if(pct >= 100){
+      clearInterval(loadTimer);
+      setTimeout(hidePreloader, motionOff() ? 0 : 250);
+    }
+  }, 120);
+  function hidePreloader(){
+    if(motionOff()){ preloader.style.display='none'; startPageAnims(); return; }
+    gsap.to(preloader, {yPercent:-100, duration:.7, ease:'expo.inOut', onComplete:function(){ preloader.style.display='none'; }});
+    startPageAnims();
+  }
+
+  /* ---------- Lenis smooth scroll ---------- */
+  var lenis;
+  if(!motionOff()){
+    lenis = new Lenis({ lerp:0.1, smoothWheel:true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function(time){ lenis.raf(time*1000); });
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click', function(e){
+        var target = document.querySelector(a.getAttribute('href'));
+        if(target){ e.preventDefault(); lenis.scrollTo(target, {offset:-70}); }
+      });
+    });
+  }
+
+  /* Recalculate all ScrollTrigger start/end positions once every image has
+     finished loading — large hero/gallery photos change document height
+     after the pins are first set up, which desyncs the horizontal pin. */
+  var imgs = Array.from(document.images);
+  var pending = imgs.filter(function(i){ return !i.complete; }).length;
+  function maybeRefresh(){ if(--pending <= 0) ScrollTrigger.refresh(); }
+  if(pending === 0){ ScrollTrigger.refresh(); }
+  else{ imgs.forEach(function(i){ if(!i.complete){ i.addEventListener('load', maybeRefresh); i.addEventListener('error', maybeRefresh); } }); }
+  window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
+
+  /* ---------- Custom cursor ---------- */
+  var dot = document.querySelector('.cursor-dot'), ring = document.querySelector('.cursor-ring');
+  if(!motionOff() && !coarsePointer.matches){
+    document.documentElement.classList.add('has-cursor');
+    var dotX = gsap.quickTo(dot,'x',{duration:.12,ease:'power3'}), dotY = gsap.quickTo(dot,'y',{duration:.12,ease:'power3'});
+    var ringX = gsap.quickTo(ring,'x',{duration:.35,ease:'power3'}), ringY = gsap.quickTo(ring,'y',{duration:.35,ease:'power3'});
+    window.addEventListener('mousemove', function(e){
+      dotX(e.clientX); dotY(e.clientY); ringX(e.clientX); ringY(e.clientY);
+    });
+    document.querySelectorAll('a,button,.magnetic').forEach(function(el){
+      el.addEventListener('mouseenter', function(){ ring.classList.add('big'); });
+      el.addEventListener('mouseleave', function(){ ring.classList.remove('big'); });
+    });
+  }
+
+  /* ---------- Magnetic buttons ---------- */
+  if(!motionOff() && !coarsePointer.matches){
+    document.querySelectorAll('.magnetic').forEach(function(el){
+      var mx = gsap.quickTo(el,'x',{duration:.3,ease:'power3'}), my = gsap.quickTo(el,'y',{duration:.3,ease:'power3'});
+      el.addEventListener('mousemove', function(e){
+        var r = el.getBoundingClientRect();
+        mx((e.clientX - (r.left+r.width/2))*0.35);
+        my((e.clientY - (r.top+r.height/2))*0.35);
+      });
+      el.addEventListener('mouseleave', function(){ mx(0); my(0); });
+    });
+  }
+
+  /* ---------- Nav hide on scroll down ---------- */
+  var nav = document.getElementById('mainNav'), lastY = 0;
+  ScrollTrigger.create({
+    start:0, end: 'max',
+    onUpdate: function(self){
+      var y = self.scroll();
+      if(y > lastY && y > 120) nav.classList.add('nav-hidden'); else nav.classList.remove('nav-hidden');
+      lastY = y;
+    }
+  });
+
+  /* ---------- Word mask reveal + hero parallax + section reveals ---------- */
+  function startPageAnims(){
+    if(motionOff()){
+      gsap.set('.mask .inner', {y:'0%'});
+      gsap.set('.reveal', {opacity:1, y:0});
+      gsap.set('#destGrid .clip', {clipPath:'inset(0% 0 0 0)'});
+      document.querySelectorAll('.stat-num').forEach(function(el){ el.textContent = (+el.dataset.count).toLocaleString('fr-FR'); });
+      return;
+    }
+    gsap.to('.mask .inner', {y:'0%', duration:.9, stagger:.12, ease:'expo.out', delay:.15});
+    gsap.fromTo('.hero .sub, .hero .hero-actions', {opacity:0,y:16}, {opacity:1,y:0,duration:.7,ease:'power2.out',delay:.55,stagger:.1});
+
+    gsap.to('#heroBg img', { yPercent:14, ease:'none', scrollTrigger:{trigger:'.hero', scrub:0.5} });
+
+    gsap.utils.toArray('.story-media img').forEach(function(img){
+      gsap.to(img, { yPercent:8, ease:'none', scrollTrigger:{trigger:img.closest('.story-row'), scrub:0.5} });
+    });
+
+    gsap.utils.toArray('.reveal').forEach(function(el){
+      if(el.closest('.hero')) return;
+      gsap.fromTo(el, {opacity:0, y:24}, {
+        opacity:1, y:0, duration:.5, ease:'power2.out',
+        scrollTrigger:{trigger:el, start:'top 85%', toggleActions:'play none none reverse'}
+      });
+    });
+
+    gsap.utils.toArray('.stat-num').forEach(function(el){
+      var target = +el.dataset.count;
+      ScrollTrigger.create({ trigger: el, start:'top 90%', once:true, onEnter:function(){
+        gsap.fromTo(el, {innerText:0}, { innerText:target, duration:1.4, ease:'power1.out', snap:{innerText:1},
+          onUpdate:function(){ el.textContent = Math.round(this.targets()[0].innerText).toLocaleString('fr-FR'); } });
+      }});
+    });
+
+    gsap.fromTo('#destGrid .clip', {clipPath:'inset(100% 0 0 0)'}, {
+      clipPath:'inset(0% 0 0 0)', duration:.8, ease:'power3.out', stagger:.12,
+      scrollTrigger:{trigger:'#destGrid', start:'top 85%', toggleActions:'play none none reverse'}
+    });
+
+    /* 3D tilt on destination cards */
+    if(!coarsePointer.matches){
+      document.querySelectorAll('.dest-card').forEach(function(card){
+        var rx = gsap.quickTo(card,'rotationX',{duration:.4,ease:'power3'});
+        var ry = gsap.quickTo(card,'rotationY',{duration:.4,ease:'power3'});
+        card.addEventListener('mousemove', function(e){
+          var r = card.getBoundingClientRect();
+          var px = (e.clientX - r.left)/r.width - 0.5, py = (e.clientY - r.top)/r.height - 0.5;
+          rx(py * -12); ry(px * 12);
+        });
+        card.addEventListener('mouseleave', function(){ rx(0); ry(0); });
+      });
+    }
+
+    ScrollTrigger.refresh();
+  }
+
+  toggle.addEventListener('change', function(){
+    location.reload();
+  });
+  reduced.addEventListener('change', function(){ if(!toggle.checked) location.reload(); });
+
+  /* ---------- Testimonials (Swiper) ---------- */
+  new Swiper('.swiper', {
+    loop:true,
+    grabCursor:true,
+    autoplay: motionOff() ? false : { delay:5000, disableOnInteraction:true, pauseOnMouseEnter:true },
+    pagination:{ el:'.swiper-pagination', clickable:true },
+    navigation:{ nextEl:'.swiper-button-next', prevEl:'.swiper-button-prev' },
+    a11y:{ enabled:true }
+  });
+
+  /* ---------- Liaisons map (avion / ferry tabs) ---------- */
+  var mapCard = document.querySelector('.map-card');
+  if(mapCard){
+    var mapKey = document.getElementById('mapKey');
+    var keyTxt = {
+      air: ['18 liaisons aériennes au départ de Lyon', 'swatch'],
+      ferry: ["20 traversées depuis la France, l'Espagne et l'Italie", 'swatch s2']
+    };
+    function replayRoutes(mode){
+      mapCard.classList.remove('play');
+      void mapCard.offsetWidth;
+      mapCard.classList.add('play');
+    }
+    document.querySelectorAll('.mtab').forEach(function(t){
+      t.addEventListener('click', function(){
+        var m = t.dataset.map;
+        document.querySelectorAll('.mtab').forEach(function(x){ x.setAttribute('aria-selected','false'); });
+        t.setAttribute('aria-selected','true');
+        document.getElementById('map-air').classList.toggle('off', m!=='air');
+        document.getElementById('map-ferry').classList.toggle('off', m!=='ferry');
+        var kt = keyTxt[m];
+        mapKey.innerHTML = '<span><i class="'+kt[1]+'"></i><em>'+kt[0]+'</em></span>';
+        replayRoutes(m);
+      });
+    });
+    if(motionOff()){ mapCard.classList.add('play'); }
+    else{
+      ScrollTrigger.create({ trigger: mapCard, start:'top 80%', once:true, onEnter: function(){ replayRoutes('air'); } });
+    }
+  }
+
+  /* ---------- Quote form (mailto, no backend) ---------- */
+  var form = document.getElementById('quoteForm'), note = document.getElementById('formNote');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var d = new FormData(form);
+    var body = 'Nom : '+d.get('nom')+'\nTéléphone : '+d.get('tel')+'\nDestination : '+d.get('destination')+'\nVoyageurs : '+d.get('pax')+'\n\n'+d.get('message');
+    var mailto = 'mailto:contact@spvoyages.com?subject='+encodeURIComponent('Demande de devis — '+d.get('destination'))+'&body='+encodeURIComponent(body)+'&cc='+encodeURIComponent(d.get('email'));
+    window.location.href = mailto;
+    note.textContent = 'Votre messagerie va s’ouvrir avec la demande pré-remplie — il ne reste qu’à l’envoyer.';
+  });
+})();
+</script>
+</body>
+</html>
