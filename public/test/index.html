@@ -990,11 +990,24 @@
   if(finderForm){
     var finderResults = document.getElementById('finderResults');
     var segMode = 'air';
+    var villesFrList = document.getElementById('villesFr');
+    var villesMgList = document.getElementById('villesMg');
+    function updateFinderDatalists(){
+      var froms = [], tos = [];
+      ROUTES[segMode].forEach(function(r){
+        if(froms.indexOf(r[0]) === -1) froms.push(r[0]);
+        if(tos.indexOf(r[1]) === -1) tos.push(r[1]);
+      });
+      villesFrList.innerHTML = froms.map(function(c){ return '<option>'+c+'</option>'; }).join('');
+      villesMgList.innerHTML = tos.map(function(c){ return '<option>'+c+'</option>'; }).join('');
+    }
+    updateFinderDatalists();
     document.querySelectorAll('.seg-btn').forEach(function(b){
       b.addEventListener('click', function(){
         document.querySelectorAll('.seg-btn').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
         b.setAttribute('aria-pressed','true');
         segMode = b.dataset.seg;
+        updateFinderDatalists();
         if(finderResults.innerHTML) runFinderSearch();
       });
     });
