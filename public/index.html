@@ -145,8 +145,8 @@
   .finder-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;}
   .finder-top h2{font-size:1.4rem;}
   .seg{display:flex;gap:4px;background:var(--color-bg);padding:4px;border-radius:10px;border:1px solid var(--color-border);width:fit-content;}
-  .seg-btn,.tab-btn{border:0;background:transparent;color:var(--color-muted);font-family:inherit;font-weight:600;font-size:13px;padding:8px 18px;border-radius:7px;cursor:pointer;transition:background .16s,color .16s;}
-  .seg-btn[aria-pressed="true"],.tab-btn[aria-pressed="true"]{background:var(--color-accent);color:#fff;}
+  .seg-btn,.tab-btn,.mode-btn{border:0;background:transparent;color:var(--color-muted);font-family:inherit;font-weight:600;font-size:13px;padding:8px 18px;border-radius:7px;cursor:pointer;transition:background .16s,color .16s;}
+  .seg-btn[aria-pressed="true"],.tab-btn[aria-pressed="true"],.mode-btn[aria-pressed="true"]{background:var(--color-accent);color:#fff;}
   .finder-fields{display:grid;grid-template-columns:1.2fr 1.2fr .9fr .9fr .7fr auto;gap:14px;align-items:end;}
   .finder-fields label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--color-muted);}
   .finder-fields input{font-family:inherit;font-size:14px;padding:11px 12px;border-radius:9px;border:1px solid var(--color-border);background:var(--color-bg);color:var(--color-fg);}
@@ -302,7 +302,6 @@
   .field-error{display:block;font-size:12px;color:var(--color-primary-dark);font-weight:600;min-height:1.2em;margin-top:2px;}
   .mode-toggle{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .mode-label{font-size:12px;font-weight:600;color:var(--color-muted);}
-  .mode-toggle .seg-btn:disabled{opacity:.4;cursor:not-allowed;}
   .contact-form input:invalid,.contact-form textarea:invalid{box-shadow:none;}
   .contact-form input.error,.contact-form textarea.error{border-color:var(--color-primary);}
   .hp-field{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
@@ -678,8 +677,8 @@
         <div class="mode-toggle" id="modeToggle">
           <span class="mode-label">Mode de transport souhaité</span>
           <div class="seg">
-            <button type="button" class="seg-btn" data-mode="Vol" aria-pressed="true">Vol</button>
-            <button type="button" class="seg-btn" data-mode="Ferry" aria-pressed="false" id="modeFerryBtn">Ferry</button>
+            <button type="button" class="mode-btn" data-mode="Vol" aria-pressed="true">Vol</button>
+            <button type="button" class="mode-btn" data-mode="Ferry" aria-pressed="false">Ferry</button>
           </div>
           <input type="hidden" name="mode" id="modeInput" value="Vol">
         </div>
@@ -1049,13 +1048,9 @@
     });
 
     function fillQuoteForm(a, b, carriers){
-      var destSelectEl = form.elements['destination'];
       var country = PAYS[normCity(b)];
-      destSelectEl.value = country || 'Autre';
-      if(typeof updateModeAvailability === 'function'){
-        updateModeAvailability();
-        if(typeof setMode === 'function') setMode(segMode === 'ferry' ? 'Ferry' : 'Vol');
-      }
+      if(typeof setMode === 'function') setMode(segMode === 'ferry' ? 'Ferry' : 'Vol');
+      if(country) form.elements['destination'].value = country;
       form.elements['pax'].value = document.getElementById('fPax').value || 1;
       var out = document.getElementById('fOut').value, back = document.getElementById('fBack').value;
       var txt = 'Trajet : ' + a + ' → ' + b + '.';
@@ -1127,28 +1122,29 @@
   /* ---------- Quote form (mailto, no backend) — validation + honeypot anti-spam ---------- */
   var form = document.getElementById('quoteForm'), note = document.getElementById('formNote');
 
-  /* Ferry only exists for Algérie/Maroc/Tunisie — every other destination is Vol only */
-  var FERRY_COUNTRIES = ['Algérie', 'Maroc', 'Tunisie'];
+  /* Choosing "Ferry" restricts the destination list to Algérie/Maroc/Tunisie
+     (the only countries we ship ferry crossings to); "Vol" restores the full list. */
   var destSelect = document.getElementById('destSelect');
   var modeInput = document.getElementById('modeInput');
-  var modeFerryBtn = document.getElementById('modeFerryBtn');
+  var ALL_DEST_OPTIONS = destSelect.innerHTML;
+  var FERRY_DEST_OPTIONS = '<option>Algérie</option><option>Maroc</option><option>Tunisie</option>';
+  function updateModeAvailability(){
+    var wanted = modeInput.value === 'Ferry' ? ['Algérie','Maroc','Tunisie'] : null;
+    var current = destSelect.value;
+    destSelect.innerHTML = modeInput.value === 'Ferry' ? FERRY_DEST_OPTIONS : ALL_DEST_OPTIONS;
+    if(wanted && wanted.indexOf(current) === -1){ destSelect.value = wanted[0]; }
+    else{ destSelect.value = current; }
+  }
   function setMode(mode){
     modeInput.value = mode;
-    form.querySelectorAll('.mode-toggle .seg-btn').forEach(function(b){
+    form.querySelectorAll('.mode-toggle .mode-btn').forEach(function(b){
       b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false');
     });
+    updateModeAvailability();
   }
-  function updateModeAvailability(){
-    var ferryAvailable = FERRY_COUNTRIES.indexOf(destSelect.value) !== -1;
-    modeFerryBtn.disabled = !ferryAvailable;
-    modeFerryBtn.title = ferryAvailable ? '' : 'Le ferry n’existe que vers l’Algérie, le Maroc et la Tunisie';
-    if(!ferryAvailable && modeInput.value === 'Ferry') setMode('Vol');
-  }
-  destSelect.addEventListener('change', updateModeAvailability);
-  form.querySelectorAll('.mode-toggle .seg-btn').forEach(function(b){
-    b.addEventListener('click', function(){ if(!b.disabled) setMode(b.dataset.mode); });
+  form.querySelectorAll('.mode-toggle .mode-btn').forEach(function(b){
+    b.addEventListener('click', function(){ setMode(b.dataset.mode); });
   });
-  updateModeAvailability();
   var errorMsgs = {
     nom: 'Merci d’indiquer votre nom (2 caractères minimum).',
     email: 'Merci d’indiquer une adresse e-mail valide.',
