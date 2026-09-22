@@ -404,7 +404,7 @@
         <label>Arrivée<input id="fTo" list="villesMg" placeholder="Alger" autocomplete="off"></label>
         <label>Aller<input id="fOut" type="date"></label>
         <label>Retour<input id="fBack" type="date"></label>
-        <label>Voyageurs<input id="fPax" type="number" min="1" max="9" value="2"></label>
+        <label>Voyageurs<input id="fPax" type="number" min="1" max="9" value="1"></label>
         <button type="submit" class="btn btn-primary">Rechercher</button>
       </form>
       <div class="finder-results" id="finderResults" aria-live="polite"></div>
@@ -902,7 +902,7 @@
       var country = PAYS[normCity(b)];
       if(country){ Array.from(destSelect.options).forEach(function(o){ if(o.text === country) destSelect.value = country; }); }
       else{ destSelect.value = segMode === 'air' ? 'Autre' : 'Ferry'; }
-      form.elements['pax'].value = document.getElementById('fPax').value || 2;
+      form.elements['pax'].value = document.getElementById('fPax').value || 1;
       var out = document.getElementById('fOut').value, back = document.getElementById('fBack').value;
       var txt = 'Trajet : ' + a + ' → ' + b + '.';
       if(carriers) txt += ' Compagnies : ' + carriers + '.';
