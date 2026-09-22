@@ -79,12 +79,6 @@ export default function PrivacyPolicyPage() {
           les compagnies aériennes et maritimes partenaires uniquement dans le cadre de la
           réservation que vous nous confiez.
         </p>
-
-        <div className="mt-10 rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-xs text-neutral-500">
-          Cette page est un modèle générique à faire relire par un professionnel du droit avant
-          mise en production, et à compléter avec votre numéro SIRET / immatriculation Atout
-          France si applicable.
-        </div>
       </main>
       <SiteFooter />
     </>
