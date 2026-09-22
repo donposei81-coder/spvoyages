@@ -1017,7 +1017,16 @@
     ghazaouet:"Algérie", mostaganem:"Algérie",
     casablanca:"Maroc", marrakech:"Maroc", tanger:"Maroc", agadir:"Maroc", nador:"Maroc",
     fes:"Maroc", oujda:"Maroc", melilla:"Maroc",
-    tunis:"Tunisie", monastir:"Tunisie", djerba:"Tunisie"
+    tunis:"Tunisie", monastir:"Tunisie", djerba:"Tunisie",
+    madrid:"Espagne", barcelone:"Espagne",
+    rome:"Italie", milan:"Italie",
+    lisbonne:"Portugal",
+    athenes:"Grèce",
+    istanbul:"Turquie",
+    dakar:"Sénégal",
+    abidjan:"Côte d'Ivoire",
+    douala:"Cameroun",
+    bamako:"Mali"
   };
   function normCity(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim(); }
 
@@ -1027,12 +1036,24 @@
     var segMode = 'air';
     var villesFrList = document.getElementById('villesFr');
     var villesMgList = document.getElementById('villesMg');
+    /* Suggested (but not necessarily in ROUTES) — searching one of these still
+       works: if there's no exact match, the results panel offers to have a
+       conseiller look into it, instead of pretending we have no destinations
+       there at all. Ferry keeps to real port cities only (France/Espagne/
+       Italie -> Maroc/Algérie/Tunisie), since that's the entire ferry network. */
+    var EXTRA_AIR_DESTINATIONS = [
+      'Madrid', 'Barcelone', 'Rome', 'Milan', 'Lisbonne', 'Athènes', 'Istanbul',
+      'Dakar', 'Abidjan', 'Douala', 'Bamako'
+    ];
     function updateFinderDatalists(){
       var froms = [], tos = [];
       ROUTES[segMode].forEach(function(r){
         if(froms.indexOf(r[0]) === -1) froms.push(r[0]);
         if(tos.indexOf(r[1]) === -1) tos.push(r[1]);
       });
+      if(segMode === 'air'){
+        EXTRA_AIR_DESTINATIONS.forEach(function(c){ if(tos.indexOf(c) === -1) tos.push(c); });
+      }
       villesFrList.innerHTML = froms.map(function(c){ return '<option>'+c+'</option>'; }).join('');
       villesMgList.innerHTML = tos.map(function(c){ return '<option>'+c+'</option>'; }).join('');
     }
