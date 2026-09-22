@@ -72,8 +72,8 @@
   html:not(.has-cursor) .cursor-dot,html:not(.has-cursor) .cursor-ring{display:none;}
 
   /* ---------- NAV ---------- */
-  .nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(10px);background:rgba(251,246,239,0.75);border-bottom:1px solid var(--color-border);transform:translateY(0);transition:transform .4s cubic-bezier(.22,1,.36,1),background .3s ease;}
-  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nav{background:rgba(34,24,18,0.7);}}
+  .nav{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--color-card);box-shadow:0 2px 16px rgba(43,33,28,0.08);transform:translateY(0);transition:transform .4s cubic-bezier(.22,1,.36,1),background .3s ease;}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nav{background:var(--color-card);}}
   .nav.nav-hidden{transform:translateY(-100%);}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1240px;margin:0 auto;}
   .nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;}
