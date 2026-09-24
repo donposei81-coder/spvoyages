@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const SITE_URL = "https://spvoyages.com";
+const SITE_URL = "https://www.spvoyages.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
