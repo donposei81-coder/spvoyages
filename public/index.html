@@ -448,7 +448,7 @@
         </div>
       </div>
       <form class="finder-fields" id="finderForm">
-        <label>Départ<input id="fFrom" list="villesFr" placeholder="Marseille" autocomplete="off"></label>
+        <label>Départ<input id="fFrom" list="villesFr" value="Lyon" placeholder="Lyon" autocomplete="off"></label>
         <label>Arrivée<input id="fTo" list="villesMg" placeholder="Alger" autocomplete="off"></label>
         <label>Aller<input id="fOut" type="date"></label>
         <label id="fBackLabel">Retour<input id="fBack" type="date"></label>
@@ -1068,6 +1068,18 @@
     updateFinderDatalists();
     fFromEl.addEventListener('input', updateFinderDatalists);
     fToEl.addEventListener('input', updateFinderDatalists);
+    [fFromEl, fToEl].forEach(function(el){
+      var saved = '';
+      el.addEventListener('focus', function(){
+        saved = el.value;
+        if(saved){ el.value = ''; updateFinderDatalists(); }
+      });
+      el.addEventListener('blur', function(){
+        if(!el.value && saved){ el.value = saved; }
+        saved = '';
+        updateFinderDatalists();
+      });
+    });
 
     /* Dates: never today or in the past — earliest selectable day is tomorrow.
        Retour can't be before Aller. */
@@ -1112,7 +1124,7 @@
         document.querySelectorAll('.seg-btn').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
         b.setAttribute('aria-pressed','true');
         segMode = b.dataset.seg;
-        fFromEl.value = ''; fToEl.value = '';
+        fFromEl.value = segMode === 'ferry' ? '' : 'Lyon'; fFromEl.placeholder = segMode === 'ferry' ? 'Sète' : 'Lyon'; fToEl.value = '';
         vehicleToggle.hidden = segMode !== 'ferry';
         updateFinderDatalists();
         if(finderResults.innerHTML) runFinderSearch();
