@@ -660,7 +660,7 @@
       <form class="contact-form reveal" id="quoteForm" novalidate>
         <div class="form-row">
           <label>Nom<input type="text" name="nom" required minlength="2" autocomplete="name"><span class="field-error" data-for="nom"></span></label>
-          <label>Téléphone<input type="tel" name="tel" autocomplete="tel" pattern="^[0-9 +().-]{6,}$"><span class="field-error" data-for="tel"></span></label>
+          <label>Téléphone<input type="tel" name="tel" autocomplete="tel" pattern="[0-9 +.\(\)\-]{6,}"><span class="field-error" data-for="tel"></span></label>
         </div>
         <label>E-mail<input type="email" name="email" required autocomplete="email"><span class="field-error" data-for="email"></span></label>
         <div class="form-row">
