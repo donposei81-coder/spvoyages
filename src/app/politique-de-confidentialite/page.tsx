@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
           ← Retour au site
         </a>
         <h1 className="mb-2 text-3xl font-bold">Politique de confidentialité</h1>
-        <p className="mb-10 text-sm text-neutral-500">Dernière mise à jour : 22 septembre 2026</p>
+        <p className="mb-10 text-sm text-neutral-500">Dernière mise à jour : 1er octobre 2026</p>
 
         <p>
           SP Voyages (« nous ») s&apos;engage à protéger la vie privée des utilisateurs de son site
@@ -82,6 +82,10 @@ export default function PrivacyPolicyPage() {
           Nous ne vendons ni ne louons vos données personnelles. Elles peuvent être partagées avec
           les compagnies aériennes et maritimes partenaires uniquement dans le cadre de la
           réservation que vous nous confiez.
+        </p>
+        <p className="mt-3">
+          Les demandes envoyées depuis le formulaire de devis nous sont transmises par e-mail via
+          un prestataire technique (Web3Forms), qui n&apos;intervient que pour acheminer le message.
         </p>
       </main>
       <footer className="border-t border-[#E8DDCE] px-6 py-8 text-center text-sm text-neutral-500">
