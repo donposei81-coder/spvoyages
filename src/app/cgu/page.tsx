@@ -4,6 +4,7 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "Conditions générales d'utilisation — SP Voyages",
   description: "Conditions générales d'utilisation du site SP Voyages.",
+  alternates: { canonical: "/cgu" },
 };
 
 export default function TermsOfUsePage() {

@@ -4,6 +4,7 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "Politique de confidentialité — SP Voyages",
   description: "Politique de confidentialité et protection des données personnelles de SP Voyages.",
+  alternates: { canonical: "/politique-de-confidentialite" },
 };
 
 export default function PrivacyPolicyPage() {

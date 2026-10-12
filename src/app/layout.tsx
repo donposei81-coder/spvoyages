@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   title: "SP Voyages — Vols secs et traversées vers l'Algérie, le Maroc, la Tunisie",
   description:
     "Agence spécialisée dans les vols secs et traversées en ferry vers l'Algérie, le Maroc et la Tunisie. 11 compagnies aériennes et maritimes, devis sous 24 h ouvrées, sans forfait imposé.",
-  alternates: { canonical: "/" },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
@@ -20,7 +19,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: SITE_URL,
     siteName: "SP Voyages",
     title: "SP Voyages — Vols et traversées vers l'Algérie, le Maroc, la Tunisie",
     description:
@@ -40,11 +38,7 @@ export const viewport: Viewport = {
   themeColor: "#16301f",
 };
 
-const openingHours = [
-  "Mo-Th 09:30-12:00,14:00-18:00",
-  "Fr 09:30-12:00,14:00-18:00",
-  "Sa 09:30-12:00",
-];
+const openingHours = ["Mo-Fr 09:30-12:00", "Mo-Fr 14:00-18:00", "Sa 09:30-12:00"];
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -66,8 +60,8 @@ const jsonLd = {
         addressCountry: "FR",
       },
       geo: { "@type": "GeoCoordinates", latitude: 45.755833, longitude: 4.842488 },
-      openingHoursSpecification: openingHours,
-      areaServed: ["Algérie", "Maroc", "Tunisie", "France"],
+      openingHours,
+      areaServed: ["Lyon", "Vénissieux", "Algérie", "Maroc", "Tunisie"],
     },
     {
       "@type": "TravelAgency",
@@ -86,8 +80,8 @@ const jsonLd = {
         addressCountry: "FR",
       },
       geo: { "@type": "GeoCoordinates", latitude: 45.6967926, longitude: 4.8711123 },
-      openingHoursSpecification: openingHours,
-      areaServed: ["Algérie", "Maroc", "Tunisie", "France"],
+      openingHours,
+      areaServed: ["Vénissieux", "Lyon", "Algérie", "Maroc", "Tunisie"],
     },
   ],
 };
